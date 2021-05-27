@@ -1,6 +1,7 @@
 /.vscode
 /build
 /imgui.ini
+/premake.sh
 
 
 # Prerequisites

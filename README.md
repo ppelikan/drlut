@@ -1,6 +1,37 @@
-# drlut
+# Dr. Lut
+
+Online WASM version:
+https://ppelikan.github.io/drlut
 
 
+---
+
+## To fix:
+* triangle generation exceeds requested amplitude!
+* plot throws exception on big array sizes!
+* on WASM version big numbers overflowing does not work (eg. tan signal)
+* provie save to file button implementation
+* output text horizontal scrolling missing
+* create default lut name from selected parameters
+* research plot right click menu to remove some unneeded optioins
+* add array size computation in bytes/kbytes/megabytes and widget to display it
+* on plot the line equal to int max is not visible (outside plot area)
+* on WASM version copy to clipboard uses ugly workaround
+
+## Fixed:
+* research 0x vs 0X in sprintf
+* provide saturation and overflow selectable casting feature
+* in hex mode, int8 and int16 are broken (overflow to 0xffffffff)
+* zero values in hex mode do not have 0x prefix
+* decrease amplitude slightly for non float types
+* on WASM version - signed values are broken! no negative values are showed
+* no negative numbers for period or array size !
+* faster -+ buttons (ampl and offset)
+* provide downcasting feature as function with selectable (value overflow vs value saturation)
+* on WASM version copy to clipboard button does not work
+
+
+---
 
 ## Building
 
@@ -16,6 +47,7 @@ git clone https://github.com/epezent/implot.git
 
 Building:
 ```
+cd drlut
 make portable
 ./build/portale/app_executable
 ```
@@ -35,6 +67,7 @@ git pull
 
 Building:
 ```
+cd drlut
 source 'path_to_your_emscripten_installation/emsdk/emsdk_env.sh'
 make web
 make serve
