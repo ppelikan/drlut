@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en-us">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+  <title>Dr. LUT</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #1b262c;
+      color: #3282b8;
+      font: normal 10px Arial, sans-serif;
+    }
+
+    a:link {
+      color: #f73859;
+    }
+
+    a:visited {
+      color: #f73859;
+    }
+
+    .emscripten {
+      position: inherit;
+      overflow: hidden;
+      display: block;
+      image-rendering: optimizeSpeed;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: -o-crisp-edges;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: optimize-contrast;
+      image-rendering: crisp-edges;
+      image-rendering: pixelated;
+      -ms-interpolation-mode: nearest-neighbor;
+      z-index: 1000;
+    }
+  </style>
+</head>
+
+<body>
+  <textarea id="clipboard_text_aera" type=hidden style="width:0;height:0;border:0;resize:none;margin-top:-60px;position:absolute;" aria-hidden="true"></textarea>
+  <center>
+    <br>
+    <h1>Dr. LUT</h1>
+    <h2>lookup table generator</h2>
+    <br><br>
+    <div class="emscripten_border">
+      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" width="850" height="550"></canvas>
+      <script type='text/javascript'>
+        var Module = {
+          preRun: [],
+          postRun: [],
+          print: (function () {
+            return function (text) {
+              text = Array.prototype.slice.call(arguments).join(' ');
+              console.log(text);
+            };
+          })(),
+          printErr: function (text) {
+            text = Array.prototype.slice.call(arguments).join(' ');
+            console.error(text);
+          },
+          canvas: (function () {
+            var canvas = document.getElementById('canvas');
+            //canvas.addEventListener("webglcontextlost", function(e) { alert('FIXME: WebGL context lost, please reload the page'); e.preventDefault(); }, false);
+            return canvas;
+          })(),
+          setStatus: function (text) {
+            console.log("status: " + text);
+          },
+          monitorRunDependencies: function (left) {
+            // no run dependencies to log
+          }
+        };
+        window.onerror = function () {
+          console.log("onerror: " + event);
+        };
+      </script>
+      {{{ SCRIPT }}}
+    </div>
+    <br><br>
+    <br>
+    <br>
+    <a target="_blank" rel="noopener noreferrer" href="https://github.com/ppelikan">https://github.com/ppelikan</a>
+  </center>
+</body>
+
+</html>
