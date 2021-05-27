@@ -1,6 +1,6 @@
 # Dr.LUT - Lookup Table Generator
 #
-# Copyright (c) 2019 by ppelikan
+# Copyright (c) 2021 by ppelikan
 # github.com/ppelikan
 
 IMGUI_DIR = ../imgui-master
