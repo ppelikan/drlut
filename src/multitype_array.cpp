@@ -90,28 +90,6 @@ void MultitypeArray::cast(bool overflow)
         cast_saturating();
 }
 
-std::string MultitypeArray::make_str(std::string format, double a)
-{
-    const std::map<DataType, std::function<std::string()>> disp{
-        {DataType::eINT8, [format, a]()
-         { return string_format(format, static_cast<int32_t>(a)); }},
-        {DataType::eINT16, [format, a]()
-         { return string_format(format, static_cast<int32_t>(a)); }},
-        {DataType::eINT32, [format, a]()
-         { return string_format(format, static_cast<int32_t>(a)); }},
-        {DataType::eUINT8, [format, a]()
-         { return string_format(format, static_cast<int32_t>(a)); }},
-        {DataType::eUINT16, [format, a]()
-         { return string_format(format, static_cast<int32_t>(a)); }},
-        {DataType::eUINT32, [format, a]()
-         { return string_format(format, static_cast<uint32_t>(a)); }},
-        {DataType::eFLOAT, [format, a]()
-         { return string_format(format, a); }},
-        {DataType::eDOUBLE, [format, a]()
-         { return string_format(format, a); }}};
-    return disp.at(type)();
-}
-
 std::string MultitypeArray::to_string(size_t columns, std::string separator)
 {
     struct DataDict

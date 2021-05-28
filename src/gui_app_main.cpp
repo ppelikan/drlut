@@ -59,6 +59,7 @@ std::map<DataType, float> DefaultOffset{
 static const float spacingY{6.0f};
 static const uint32_t step{1};
 static const uint32_t stepFast{10};
+static const int sizeMax{100000};
 // bool plotAutoFit{true};
 // std::pair<float, float> plotScale{DefaultPlot[Builder.Table.type]};
 
@@ -68,6 +69,8 @@ using namespace ImGui;
 
 void generate()
 {
+    if (Builder.arraySize > sizeMax)
+        Builder.arraySize = sizeMax;
     Builder.generate();
     // plotAutoFit = true;
     // ImPlot::SetNextPlotLimits(-1.0, Builder.arraySize + 1.0, DefaultPlot[Builder.Table.type].first, DefaultPlot[Builder.Table.type].second,ImGuiCond_Always );
@@ -101,6 +104,8 @@ void loopGUI_main()
             generate();
         if (ImGui::InputScalar("Samples per period", ImGuiDataType_U32, &Builder.samplesPerPeriod, &step, &stepFast, "%u"))
         {
+            if (Builder.samplesPerPeriod > sizeMax)
+                keepOnePeriod = false;
             if (keepOnePeriod)
                 Builder.arraySize = Builder.samplesPerPeriod;
             generate();
@@ -108,7 +113,11 @@ void loopGUI_main()
         if (Checkbox("Generate one period", &keepOnePeriod))
         {
             if (keepOnePeriod)
+            {
+                if (Builder.samplesPerPeriod > sizeMax)
+                    Builder.samplesPerPeriod = sizeMax;
                 Builder.arraySize = Builder.samplesPerPeriod;
+            }
             generate();
         }
 
@@ -148,6 +157,8 @@ void loopGUI_main()
         Text("Range behaviour");
         if (ImGui::InputScalar("Array size", ImGuiDataType_U32, &Builder.arraySize, &step, &stepFast, "%u"))
         {
+            if (Builder.arraySize > sizeMax)
+                Builder.arraySize = sizeMax;
             if (keepOnePeriod)
                 Builder.samplesPerPeriod = Builder.arraySize;
             generate();
@@ -177,8 +188,8 @@ void loopGUI_main()
         ImPlotFlags plotflag2 = ImPlotFlags_NoTitle | ImPlotFlags_NoLegend;
         if (ImPlot::BeginPlot("##plot", "", "", plotDimensions, plotflag2, plotflag, plotflag))
         {
-            // ImPlot::PlotLine("##plot_line", Builder.peekWaveGetTable(), Builder.arraySize);
-            ImPlot::PlotStairs("##plot_line", Builder.peekWaveGetTable(), Builder.arraySize);
+            if (Builder.arraySize <= 5121) // todo - drawing more datapoints is currently not supported
+                ImPlot::PlotStairs("##plot_line", Builder.peekWaveGetTable(), Builder.arraySize);
             ImPlot::EndPlot();
         }
     }
