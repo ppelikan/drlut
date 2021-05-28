@@ -1,15 +1,13 @@
-# Dr. Lut
+# Dr. LUT - Lookup Table Generator
 
 Online WASM version:
 https://ppelikan.github.io/drlut
 
-
 ---
 
-## To fix:
+### To fix:
 * triangle generation exceeds requested amplitude!
 * plot throws exception on big array sizes!
-* on WASM version big numbers overflowing does not work (eg. tan signal)
 * provie save to file button implementation
 * output text horizontal scrolling missing
 * create default lut name from selected parameters
@@ -18,7 +16,7 @@ https://ppelikan.github.io/drlut
 * on plot the line equal to int max is not visible (outside plot area)
 * on WASM version copy to clipboard uses ugly workaround
 
-## Fixed:
+### Fixed:
 * research 0x vs 0X in sprintf
 * provide saturation and overflow selectable casting feature
 * in hex mode, int8 and int16 are broken (overflow to 0xffffffff)
@@ -29,7 +27,7 @@ https://ppelikan.github.io/drlut
 * faster -+ buttons (ampl and offset)
 * provide downcasting feature as function with selectable (value overflow vs value saturation)
 * on WASM version copy to clipboard button does not work
-
+* on WASM version big numbers overflowing does not work (eg. tan signal)
 
 ---
 

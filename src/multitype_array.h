@@ -29,8 +29,15 @@ enum class NumericBase
 class MultitypeArray
 {
 private:
+    const std::map<DataType, std::pair<double, double>> ranges{
+        {DataType::eINT8, {INT8_MIN, INT8_MAX}},
+        {DataType::eINT16, {INT16_MIN, INT16_MAX}},
+        {DataType::eINT32, {INT32_MIN, INT32_MAX}},
+        {DataType::eUINT8, {0.0, UINT8_MAX}},
+        {DataType::eUINT16, {0.0, UINT16_MAX}},
+        {DataType::eUINT32, {0.0, UINT32_MAX}}};
+    
     std::vector<double> Array{std::vector<double>(1024, 0.0f)};
-    void saturate(double min, double max);
     void cast_overflowing();
     void cast_saturating();
     std::string make_str(std::string format, double a);
@@ -48,4 +55,3 @@ public:
     void cast(bool overflow = true);
     std::string to_string(size_t columns = 52, std::string separator = ",");
 };
-

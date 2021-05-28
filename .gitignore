@@ -1,6 +1,6 @@
 /.vscode
 /build
-/imgui.ini
+imgui.ini
 /premake.sh
 
 

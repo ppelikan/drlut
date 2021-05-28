@@ -8,6 +8,7 @@
 #include <string>
 #include <stdexcept>
 #include <map>
+#include <cmath>
 #include <functional>
 #include <algorithm>
 
@@ -24,77 +25,33 @@ std::string string_format(const std::string &format, Args... args)
     return std::string(buf.get(), buf.get() + size - 1); // we don't want the '\0' inside
 }
 
+double wrap_range(double v, double min, double max)
+{
+    auto wmax = [](double v, double max)
+    {
+        return fmod(max + fmod(v, max), max);
+    };
+    return min + wmax(v - min, max - min);
+}
+
 void MultitypeArray::cast_overflowing()
 {
     if ((type == DataType::eFLOAT) || (type == DataType::eDOUBLE))
         return;
-
-    const std::map<DataType, std::function<void(void)>> dispatcher{
-        {DataType::eINT8, [this]()
-         {
-             std::transform(Array.begin(), Array.end(), Array.begin(), [](double &c)
-                            { return static_cast<int8_t>(c); });
-         }},
-        {DataType::eINT16, [this]()
-         {
-             std::transform(Array.begin(), Array.end(), Array.begin(), [](double &c)
-                            { return static_cast<int16_t>(c); });
-         }},
-        {DataType::eINT32, [this]()
-         { std::transform(Array.begin(), Array.end(), Array.begin(), [](double &c)
-                          { return static_cast<int32_t>(c); }); }},
-        {DataType::eUINT8, [this]()
-         {
-             std::transform(Array.begin(), Array.end(), Array.begin(), [](double &c)
-                            { return static_cast<uint8_t>(c); });
-         }},
-        {DataType::eUINT16, [this]()
-         {
-             std::transform(Array.begin(), Array.end(), Array.begin(), [](double &c)
-                            { return static_cast<uint16_t>(c); });
-         }},
-        {DataType::eUINT32, [this]()
-         { std::transform(Array.begin(), Array.end(), Array.begin(), [](double &c)
-                          { return static_cast<uint32_t>(c); }); }}};
-    dispatcher.at(type)();
-}
-
-void MultitypeArray::saturate(double min, double max)
-{
+    double min = ranges.at(type).first-1.0;
+    double max = ranges.at(type).second+1.0;
     std::transform(Array.begin(), Array.end(), Array.begin(), [=](double &c)
-                   { return c > max ? max : (c < min ? min : c); });
+                   { return wrap_range(c, min, max); });
 }
 
 void MultitypeArray::cast_saturating()
 {
     if ((type == DataType::eFLOAT) || (type == DataType::eDOUBLE))
         return;
-    const std::map<DataType, std::function<void(void)>> dispatcher{
-        {DataType::eINT8, [this]()
-         {
-             saturate(INT8_MIN, INT8_MAX);
-         }},
-        {DataType::eINT16, [this]()
-         {
-             saturate(INT16_MIN, INT16_MAX);
-         }},
-        {DataType::eINT32, [this]()
-         {
-             saturate(INT32_MIN, INT32_MAX);
-         }},
-        {DataType::eUINT8, [this]()
-         {
-             saturate(0, UINT8_MAX);
-         }},
-        {DataType::eUINT16, [this]()
-         {
-             saturate(0, UINT16_MAX);
-         }},
-        {DataType::eUINT32, [this]()
-         {
-             saturate(0, UINT32_MAX);
-         }}};
-    dispatcher.at(type)();
+    double min = ranges.at(type).first;
+    double max = ranges.at(type).second;
+    std::transform(Array.begin(), Array.end(), Array.begin(), [=](double &c)
+                   { return c > max ? max : (c < min ? min : c); });
 }
 
 MultitypeArray::MultitypeArray()
