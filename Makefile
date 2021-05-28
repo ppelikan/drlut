@@ -48,7 +48,7 @@ WASM_CPPFLAGS = $(INCLUDES)
 WASM_CPPFLAGS += -Wall -Wformat -Os
 WASM_CPPFLAGS += $(WASM_EMS) -DWASM_BUILD
 WASM_LIBS += $(WASM_EMS)
-WASM_LDFLAGS += --shell-file shell_minimal.html
+WASM_LDFLAGS += --shell-file shell.html
 
 
 ##---------------------------------------------------------------------
