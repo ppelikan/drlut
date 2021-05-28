@@ -7,13 +7,12 @@ https://ppelikan.github.io/drlut
 
 ### To fix:
 * triangle generation exceeds requested amplitude!
-* plot throws exception on big array sizes!
-* provie save to file button implementation
-* output text horizontal scrolling missing
+* provide save to file button implementation
 * create default lut name from selected parameters
 * research plot right click menu to remove some unneeded optioins
 * add array size computation in bytes/kbytes/megabytes and widget to display it
 * on plot the line equal to int max is not visible (outside plot area)
+* output text horizontal scrolling missing
 * on WASM version copy to clipboard uses ugly workaround
 
 ### Fixed:
@@ -28,6 +27,7 @@ https://ppelikan.github.io/drlut
 * provide downcasting feature as function with selectable (value overflow vs value saturation)
 * on WASM version copy to clipboard button does not work
 * on WASM version big numbers overflowing does not work (eg. tan signal)
+* plot throws exception on big array sizes!
 
 ---
 
