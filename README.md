@@ -1,35 +1,40 @@
 # Dr. LUT - Lookup Table Generator
 
-Online WASM version:
+Online tool written in C/C++ that generates waveforms and exports them as arrays.
+
+Online version:
 https://ppelikan.github.io/drlut
 
+
+## Features:
+* avaiable waveforms:
+  * zeros, sin, cos, tan, ctan, sawtooth, triangle, white noise
+* avaiable output array formats:
+  * signed: int8, int16, int32, float (double)
+  * unsigned: uint8, uint16, uint32
+* configurable amplitude and y-axis offset
+* selectable range behaviour:
+  * int overflow or int saturation
+* selectable array output format:
+  * hexadecimal or decimal
+* copy to clipboard option
+
+
+---
 ---
 
-### To fix:
-* triangle generation exceeds requested amplitude!
+
+```
+To fix:
+* triangle generation sometimes exceeds requested amplitude
 * provide save to file button implementation
+* plot - lines appear outside plot area
 * create default lut name from selected parameters
-* research plot right click menu to remove some unneeded optioins
+* research plot right click menu to remove some unneeded options
 * add array size computation in bytes/kbytes/megabytes and widget to display it
-* on plot the line equal to int max is not visible (outside plot area)
-* output text horizontal scrolling missing
+* output text - horizontal scrolling missing
 * on WASM version copy to clipboard uses ugly workaround
-
-### Fixed:
-* research 0x vs 0X in sprintf
-* provide saturation and overflow selectable casting feature
-* in hex mode, int8 and int16 are broken (overflow to 0xffffffff)
-* zero values in hex mode do not have 0x prefix
-* decrease amplitude slightly for non float types
-* on WASM version - signed values are broken! no negative values are showed
-* no negative numbers for period or array size !
-* faster -+ buttons (ampl and offset)
-* provide downcasting feature as function with selectable (value overflow vs value saturation)
-* on WASM version copy to clipboard button does not work
-* on WASM version big numbers overflowing does not work (eg. tan signal)
-* plot throws exception on big array sizes!
-
----
+```
 
 ## Building
 
