@@ -38,10 +38,10 @@ void MultitypeArray::cast_overflowing()
 {
     if ((type == DataType::eFLOAT) || (type == DataType::eDOUBLE))
         return;
-    double min = ranges.at(type).first-1.0;
-    double max = ranges.at(type).second+1.0;
+    double min = ranges.at(type).first;
+    double max = ranges.at(type).second;
     std::transform(Array.begin(), Array.end(), Array.begin(), [=](double &c)
-                   { return wrap_range(c, min, max); });
+                   { return round(wrap_range(c, min, max)); });
 }
 
 void MultitypeArray::cast_saturating()
@@ -51,7 +51,10 @@ void MultitypeArray::cast_saturating()
     double min = ranges.at(type).first;
     double max = ranges.at(type).second;
     std::transform(Array.begin(), Array.end(), Array.begin(), [=](double &c)
-                   { return c > max ? max : (c < min ? min : c); });
+                   {
+                       double v = round(c);
+                       return v > max ? max : (v < min ? min : v);
+                   });
 }
 
 MultitypeArray::MultitypeArray()
