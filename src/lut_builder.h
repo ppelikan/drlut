@@ -22,7 +22,6 @@ enum class CastMethod
 class LutBuilder
 {
 private:
-    WaveGenerator Generator;
 
     std::string numToStr(double v);
     void executePosprocessing();

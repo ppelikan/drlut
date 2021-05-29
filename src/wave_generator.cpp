@@ -10,16 +10,23 @@
 
 std::mt19937 *WaveGenerator::Gen;
 
-WaveGenerator::WaveGenerator()
+const std::map<WaveformType, std::function<void(GeneratorConfig)>> WaveGenerator::dispatcher{
+    {WaveformType::eZEROS, generateZeros},
+    {WaveformType::eSIN, generateSin},
+    {WaveformType::eCOS, generateCos},
+    {WaveformType::eTAN, generateTan},
+    {WaveformType::eCTG, generateCtg},
+    {WaveformType::eSAWTOOTH, generateSawtooth},
+    {WaveformType::eSAWTOOTHR, generateSawtoothRev},
+    {WaveformType::eTRIANGLE, generateTriangle},
+    {WaveformType::eNOISE, generateNoise}};
+
+void WaveGenerator::init()
 {
     if (Gen != nullptr)
         return;
     std::random_device rd;        // obtain a random number from hardware
     Gen = new std::mt19937(rd()); // seed the generator
-}
-
-WaveGenerator::~WaveGenerator()
-{
 }
 
 void WaveGenerator::generateZeros(GeneratorConfig cfg)

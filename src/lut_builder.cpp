@@ -29,6 +29,7 @@ void LutBuilder::executeTypeConversion()
 
 LutBuilder::LutBuilder()
 {
+    WaveGenerator::init();
 }
 
 LutBuilder::~LutBuilder()
@@ -43,7 +44,7 @@ void LutBuilder::generate()
         samplesPerPeriod = 1;
     GeneratorConfig cfg{Table.vector_double(), selectedWaveType, samplesPerPeriod};
     Table.resize(arraySize);
-    Generator.generate(cfg);
+    WaveGenerator::generate(cfg);
     executePosprocessing();
     executeTypeConversion();
 }
