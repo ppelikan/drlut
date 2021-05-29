@@ -67,8 +67,20 @@ void LutBuilder::buildLut()
         {DataType::eFLOAT, "float_t"},
         {DataType::eDOUBLE, "double_t"}};
 
-    OutputText.clear(); //todo create default lut name from selected parameters
-    OutputText = "const " + typeName.at(Table.type) + " Lut [" + std::to_string(Table.size()) + "] = { \n";
+    const std::map<WaveformType, std::string> waveName{
+        {WaveformType::eZEROS, "zeros"},
+        {WaveformType::eSIN, "sin"},
+        {WaveformType::eCOS, "cos"},
+        {WaveformType::eTAN, "tan"},
+        {WaveformType::eCTG, "ctg"},
+        {WaveformType::eSAWTOOTH, "sawtooth"},
+        {WaveformType::eSAWTOOTHR, "sawtooth_r"},
+        {WaveformType::eTRIANGLE, "triangle"},
+        {WaveformType::eNOISE, "noise"}};
+
+    OutputText.clear();
+    OutputText = "/* Generated using Dr. LUT - Free Lookup Table Generator  */ \n/* https://github.com/ppelikan/drlut  */ \n\n";
+    OutputText += "const " + typeName.at(Table.type) + " lut_"+waveName.at(selectedWaveType)+"[" + std::to_string(Table.size()) + "] = { \n";
     OutputText += Table.to_string();
     OutputText += " }; \n\n";
 }
