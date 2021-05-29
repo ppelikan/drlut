@@ -28,10 +28,9 @@ https://ppelikan.github.io/drlut
 To fix:
 * triangle generation sometimes exceeds requested amplitude
 * provide save to file button implementation
-* plot - lines appear outside plot area
-* research plot right click menu to remove some unneeded options
 * add array size computation in bytes/kbytes/megabytes and widget to display it
 * output text - horizontal scrolling missing
+* plot disappears for more than 5121 datapoints (ugly workaround)
 * on WASM version copy to clipboard uses ugly workaround
 ```
 

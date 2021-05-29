@@ -45,23 +45,10 @@ std::map<DataType, float> DefaultOffset{
     {DataType::eFLOAT, 0.0},
     {DataType::eDOUBLE, 0.0}};
 
-// static const float plotPadding{5.0};
-// std::map<DataType, std::pair<float, float>> DefaultPlot{
-//     {DataType::eINT8, {INT8_MIN - plotPadding, INT8_MAX + plotPadding}},
-//     {DataType::eINT16, {INT16_MIN - plotPadding, INT16_MAX + plotPadding}},
-//     {DataType::eINT32, {INT32_MIN - plotPadding * 500.0, INT32_MAX + plotPadding * 500.0}},
-//     {DataType::eUINT8, {-plotPadding, UINT8_MAX + plotPadding}},
-//     {DataType::eUINT16, {-plotPadding, UINT16_MAX + plotPadding}},
-//     {DataType::eUINT32, {-plotPadding * 500.0, UINT32_MAX + plotPadding * 500.0}},
-//     {DataType::eFLOAT, {-1.1, 1.1}},
-//     {DataType::eDOUBLE, {-1.1, 1.1}}};
-
 static const float spacingY{6.0f};
 static const uint32_t step{1};
 static const uint32_t stepFast{10};
 static const int sizeMax{100000};
-// bool plotAutoFit{true};
-// std::pair<float, float> plotScale{DefaultPlot[Builder.Table.type]};
 
 LutBuilder Builder;
 
@@ -72,13 +59,10 @@ void generate()
     if (Builder.arraySize > sizeMax)
         Builder.arraySize = sizeMax;
     Builder.generate();
-    // plotAutoFit = true;
-    // ImPlot::SetNextPlotLimits(-1.0, Builder.arraySize + 1.0, DefaultPlot[Builder.Table.type].first, DefaultPlot[Builder.Table.type].second,ImGuiCond_Always );
 }
 
 void initGUI_main()
 {
-    // Builder.generate();;
     generate();
 }
 
@@ -142,8 +126,6 @@ void loopGUI_main()
             Builder.amplitudeDouble = DefaultAmplitude[Builder.Table.type];
             Builder.offsetDouble = DefaultOffset[Builder.Table.type];
             generate();
-            // plotAutoFit = false;
-            // ImPlot::SetNextPlotLimits(-1.0, Builder.arraySize + 1.0, DefaultPlot[Builder.Table.type].first, DefaultPlot[Builder.Table.type].second, ImGuiCond_Always);
         }
         if (RadioButton("overflow", reinterpret_cast<int *>(&Builder.castMethod), 0))
             generate();
@@ -181,13 +163,12 @@ void loopGUI_main()
         if (plotDimensions.y < 50.0f)
             plotDimensions.y = 50.0f;
 
-        // ImPlot::SetNextPlotLimits(-1.0, Builder.arraySize + 1.0, DefaultPlot[Builder.Table.type].first, DefaultPlot[Builder.Table.type].second, ImGuiCond_Always);
         ImPlotAxisFlags plotflag = ImPlotAxisFlags_NoLabel | ImPlotAxisFlags_AutoFit;
-        // if (plotAutoFit)
-        //     plotflag |= ImPlotAxisFlags_AutoFit;
         ImPlotFlags plotflag2 = ImPlotFlags_NoTitle | ImPlotFlags_NoLegend;
         if (ImPlot::BeginPlot("##plot", "", "", plotDimensions, plotflag2, plotflag, plotflag))
         {
+            if (Builder.arraySize <= 4000) // todo - drawing more datapoints is currently not supported
+                ImPlot::SetNextMarkerStyle(ImPlotMarker_Square, 2.0f);
             if (Builder.arraySize <= 5121) // todo - drawing more datapoints is currently not supported
                 ImPlot::PlotStairs("##plot_line", Builder.peekWaveGetTable(), Builder.arraySize);
             ImPlot::EndPlot();

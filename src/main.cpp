@@ -76,6 +76,7 @@ int main(int, char **)
     ImPlot::GetStyle().PlotPadding = ImVec2(1, 1);
     ImPlot::GetStyle().LabelPadding = ImVec2(0, 0);
     ImPlot::GetStyle().LegendPadding = ImVec2(0, 0);
+    ImPlot::GetStyle().FitPadding = ImVec2(0.05, 0.05);
     ImGuiIO &io = ImGui::GetIO();
     (void)io;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
