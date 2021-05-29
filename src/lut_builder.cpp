@@ -77,7 +77,8 @@ void LutBuilder::buildLut()
         {WaveformType::eSAWTOOTH, "sawtooth"},
         {WaveformType::eSAWTOOTHR, "sawtooth_r"},
         {WaveformType::eTRIANGLE, "triangle"},
-        {WaveformType::eNOISE, "noise"}};
+        {WaveformType::eNOISE, "noise"},
+        {WaveformType::eGAUSS, "gauss"}};
 
     OutputText.clear();
     OutputText = "/* Generated using Dr. LUT - Free Lookup Table Generator  */ \n/* https://github.com/ppelikan/drlut  */ \n\n";

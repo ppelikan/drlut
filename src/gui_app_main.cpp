@@ -84,7 +84,7 @@ void loopGUI_main()
     if (CollapsingHeader("Waveform properties", ImGuiTreeNodeFlags_DefaultOpen))
     {
         Dummy(ImVec2(0, spacingY));
-        if (Combo("Waveform type", reinterpret_cast<int *>(&Builder.selectedWaveType), "zeros\0sin\0cos\0tan\0ctg\0sawtooth\0sawtooth reversed\0triangle\0white noise\0\0"))
+        if (Combo("Waveform type", reinterpret_cast<int *>(&Builder.selectedWaveType), "zeros\0sin\0cos\0tan\0ctg\0sawtooth\0sawtooth reversed\0triangle\0white noise\0gauss\0\0"))
             generate();
         if (ImGui::InputScalar("Samples per period", ImGuiDataType_U32, &Builder.samplesPerPeriod, &step, &stepFast, "%u"))
         {

@@ -19,7 +19,8 @@ const std::map<WaveformType, std::function<void(GeneratorConfig)>> WaveGenerator
     {WaveformType::eSAWTOOTH, generateSawtooth},
     {WaveformType::eSAWTOOTHR, generateSawtoothRev},
     {WaveformType::eTRIANGLE, generateTriangle},
-    {WaveformType::eNOISE, generateNoise}};
+    {WaveformType::eNOISE, generateNoise},
+    {WaveformType::eGAUSS, generateGauss}};
 
 void WaveGenerator::init()
 {
@@ -104,6 +105,17 @@ void WaveGenerator::generateNoise(GeneratorConfig cfg)
     std::uniform_real_distribution<double> distr(-1.0, 1.0);
     std::generate(cfg.SampleArray.begin(), cfg.SampleArray.end(), [&]()
                   { return distr(*Gen); });
+}
+
+void WaveGenerator::generateGauss(GeneratorConfig cfg)
+{
+    static const double range{0.5};
+    static const double c{0.2}; // this value being const is an temporary solution
+    for (size_t i = 0; i < cfg.SampleArray.size(); ++i)
+    {
+        double x = (double)i * 2.0 * range / (double)cfg.samplesPerPeriod - range;
+        cfg.SampleArray[i] = exp(-(x*x)/(2*c*c));
+    }
 }
 
 void WaveGenerator::generate(GeneratorConfig config)

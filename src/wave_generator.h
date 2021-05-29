@@ -21,7 +21,8 @@ enum class WaveformType
     eSAWTOOTH,
     eSAWTOOTHR,
     eTRIANGLE,
-    eNOISE
+    eNOISE,
+    eGAUSS
 };
 
 struct GeneratorConfig
@@ -46,6 +47,7 @@ private:
     static void generateSawtoothRev(GeneratorConfig cfg);
     static void generateTriangle(GeneratorConfig cfg);
     static void generateNoise(GeneratorConfig cfg);
+    static void generateGauss(GeneratorConfig cfg);
 
 public:
     static void init();
