@@ -8,7 +8,7 @@ https://ppelikan.github.io/drlut
 
 ## Features:
 * avaiable waveforms:
-  * zeros, sin, cos, tan, ctan, sawtooth, triangle, white noise
+  * zeros, sin, cos, tan, ctan, sawtooth, triangle, white noise, gauss
 * avaiable output array formats:
   * signed: int8, int16, int32, float (double)
   * unsigned: uint8, uint16, uint32
@@ -29,6 +29,7 @@ To fix:
 * triangle generation sometimes exceeds requested amplitude
 * provide save to file button implementation
 * add array size computation in bytes/kbytes/megabytes and widget to display it
+* add typical DSP window functions: Hamming, Hann, Blackman, Flat-top, Blackman-Harris etc.
 * output text - horizontal scrolling missing
 * plot disappears for more than 5121 datapoints (ugly workaround)
 * on WASM version copy to clipboard uses ugly workaround
