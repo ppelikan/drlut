@@ -8,7 +8,7 @@
 #include <string>
 #include "lut_builder.h"
 
-void LutBuilder::executePosprocessing()
+void LutBuilder::executePostprocessing()
 {
     std::vector<double> &arr = Table.vector_double();
     double mux = amplitudeDouble - 0.0000000001; // temporary solution to unwanted overflows
@@ -45,7 +45,7 @@ void LutBuilder::generate()
     GeneratorConfig cfg{Table.vector_double(), selectedWaveType, samplesPerPeriod};
     Table.resize(arraySize);
     WaveGenerator::generate(cfg);
-    executePosprocessing();
+    executePostprocessing();
     executeTypeConversion();
 }
 

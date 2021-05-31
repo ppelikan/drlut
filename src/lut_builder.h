@@ -22,9 +22,7 @@ enum class CastMethod
 class LutBuilder
 {
 private:
-
-    std::string numToStr(double v);
-    void executePosprocessing();
+    void executePostprocessing();
     void executeTypeConversion();
 
 public:

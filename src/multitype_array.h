@@ -6,6 +6,7 @@
 **/
 #pragma once
 #include <vector>
+#include <map>
 #include <string>
 
 enum class DataType
@@ -28,7 +29,7 @@ enum class NumericBase
 
 // table of floats that simulates being table of selected type
 // usage:
-// 1. resize or not
+// 1. resize() or not
 // 2. input float data using: c_array() or vector_double()
 // 3. cast to selected data type using: cast()
 // 4. observe data using: c_array(), vector_double() or to_string()
