@@ -81,7 +81,7 @@ void LutBuilder::buildLut()
         {WaveformType::eGAUSS, "gauss"}};
 
     OutputText.clear();
-    OutputText = "/* Generated using Dr. LUT - Free Lookup Table Generator  */ \n/* https://github.com/ppelikan/drlut  */ \n\n";
+    OutputText = "/* Generated using Dr LUT - Free Lookup Table Generator  */ \n/* https://github.com/ppelikan/drlut  */ \n\n";
     OutputText += "const " + typeName.at(Table.type) + " lut_"+waveName.at(selectedWaveType)+"[" + std::to_string(Table.size()) + "] = { \n";
     OutputText += Table.to_string();
     OutputText += " }; \n\n";

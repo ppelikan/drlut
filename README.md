@@ -1,4 +1,4 @@
-# Dr. LUT - Lookup Table Generator
+# Dr LUT - Lookup Table Generator
 
 Online tool written in C/C++ that generates waveforms and exports them as arrays.
 
