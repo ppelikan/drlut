@@ -3,8 +3,8 @@
 # Copyright (c) 2021 by ppelikan
 # github.com/ppelikan
 
-IMGUI_DIR = ../imgui-master
-IMPLOT_DIR = ../implot-master
+IMGUI_DIR = ../imgui
+IMPLOT_DIR = ../implot
 SRC_DIR = src
 SOURCES = $(SRC_DIR)/main.cpp\
 		  $(SRC_DIR)/gui_app_main.cpp\

@@ -41,8 +41,7 @@ To fix:
 
 Tool installation:
 ```
-sudo apt-get install gcc make
-sudo apt-get install libglfw3-dev libgles2-mesa-dev
+sudo apt-get install gcc make libglfw3-dev libgles2-mesa-dev
 git clone https://github.com/ocornut/imgui.git
 git clone https://github.com/epezent/implot.git
 ```
@@ -51,15 +50,14 @@ Building:
 ```
 cd drlut
 make portable
-./build/portale/app_executable
+./build/portable/app_executable
 ```
 
 ### Web WASM Emscripten version (for release deployment):
 
 Tool installation:
 ```
-sudo apt-get install python3
-sudo apt-get install cmake
+sudo apt-get install cmake python3
 git clone https://github.com/emscripten-core/emsdk.git
 cd emsdk
 git pull
