@@ -1,9 +1,9 @@
 /**
  *  Dr.LUT - Lookup Table Generator
- * 
+ *
  *  Copyright (c) 2021 by ppelikan
  *  github.com/ppelikan
-**/
+ **/
 #include <ctime>
 #include <map>
 #include <utility>
@@ -17,12 +17,25 @@
 #include <emscripten.h>
 EM_JS(void, js_copy_to_clipboard, (const char *str),
       {
-          var copyText = document.getElementById("clipboard_text_aera");
-          copyText.value = UTF8ToString(str);
-          copyText.select();
-          copyText.setSelectionRange(0, 99999); /* For mobile devices */
+          var contentText = document.getElementById("clipboard_text_aera");
+          contentText.value = UTF8ToString(str);
+          contentText.select();
+          contentText.setSelectionRange(0, 99999); // For mobile devices
           document.execCommand("copy");
       });
+
+EM_JS(void, js_save_as_file, (const char *str),
+      {
+          var downloadableLink = document.createElement('a');
+          downloadableLink.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(UTF8ToString(str)));
+          downloadableLink.download = "lut.h";
+          document.body.appendChild(downloadableLink);
+          downloadableLink.click();
+          document.body.removeChild(downloadableLink);
+      });
+#else
+#include <fstream>
+#include "ImGuiFileDialog.h"
 #endif
 
 std::map<DataType, float> DefaultAmplitude{
@@ -54,6 +67,16 @@ LutBuilder Builder;
 
 using namespace ImGui;
 
+#ifndef WASM_BUILD
+void saveToFile(std::string name)
+{
+    std::ofstream outfile;
+    outfile.open(name, std::ios_base::app);
+    outfile << Builder.OutputText;
+    outfile.close();
+}
+#endif
+
 void generate()
 {
     if (Builder.arraySize > sizeMax)
@@ -64,6 +87,31 @@ void generate()
 void initGUI_main()
 {
     generate();
+}
+
+void popup(bool render_now = false)
+{
+    static std::time_t popupStart;
+    static bool trigger;
+    // simple "state machine" to show popup just for one second
+    if (!render_now)
+    {
+        trigger = true;
+        popupStart = std::time(NULL);
+        return;
+    }
+    if (trigger)
+    {
+        OpenPopup("Done");
+        trigger = false;
+    }
+    if (BeginPopup("Done"))
+    {
+        Text(" Done! ");
+        if (std::time(NULL) - popupStart > 1)
+            CloseCurrentPopup();
+        EndPopup();
+    }
 }
 
 void loopGUI_main()
@@ -185,7 +233,6 @@ void loopGUI_main()
     }
     SameLine();
 
-    static std::time_t popupStart;
     if (Button("Copy all to clipboard"))
     {
 #ifdef WASM_BUILD
@@ -193,19 +240,18 @@ void loopGUI_main()
 #else
         SetClipboardText(Builder.OutputText.c_str());
 #endif
-        OpenPopup("Done");
-        popupStart = std::time(NULL);
+        popup();
     }
-    if (BeginPopup("Done"))
+    SameLine();
+    if (Button("Save as file"))
     {
-        Text(" Done! ");
-        if (std::time(NULL) - popupStart > 1)
-            CloseCurrentPopup();
-        EndPopup();
+#ifdef WASM_BUILD
+        js_save_as_file(Builder.OutputText.c_str());
+#else
+        ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File Name", ".h,.hpp,.c,.cpp,.txt,.", ".h");
+#endif
     }
 
-    SameLine();
-    Button("Save as file");
     Spacing();
     Separator();
 
@@ -215,4 +261,16 @@ void loopGUI_main()
     Dummy(ImVec2(0, spacingY));
     EndTable();
     End();
+#ifndef WASM_BUILD
+    if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey", ImGuiWindowFlags_NoCollapse, ImVec2((float)WINDOW_W / 1.5, (float)WINDOW_H / 2.0), ImVec2((float)WINDOW_W, (float)WINDOW_H)))
+    {
+        if (ImGuiFileDialog::Instance()->IsOk())
+        {
+            saveToFile(ImGuiFileDialog::Instance()->GetFilePathName());
+            popup();
+        }
+        ImGuiFileDialog::Instance()->Close();
+    }
+#endif
+    popup(true);
 }

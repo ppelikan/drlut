@@ -3,9 +3,12 @@
 # Copyright (c) 2021 by ppelikan
 # github.com/ppelikan
 
+
 IMGUI_DIR = ../imgui
 IMPLOT_DIR = ../implot
+FD_DIR = ext/ImGuiFileDialog
 SRC_DIR = src
+
 SOURCES = $(SRC_DIR)/main.cpp\
 		  $(SRC_DIR)/gui_app_main.cpp\
 		  $(SRC_DIR)/lut_builder.cpp\
@@ -27,6 +30,8 @@ INCLUDES = -I$(IMGUI_DIR)\
 		   -I$(IMGUI_DIR)/backends\
 		   -I$(IMPLOT_DIR)
 
+PORT_SOURCES = $(SOURCES) $(FD_DIR)/ImGuiFileDialog.cpp
+PORT_INCLUDES = $(INCLUDES) -I$(FD_DIR)
 
 ##---------------------------------------------------------------------
 ## EMSCRIPTEN OPTIONS
@@ -42,9 +47,7 @@ WASM_EMS += -s DISABLE_EXCEPTION_CATCHING=1 -s NO_EXIT_RUNTIME=0
 WASM_EMS += -s ASSERTIONS=1
 WASM_EMS += -s NO_FILESYSTEM=1 -DIMGUI_DISABLE_FILE_FUNCTIONS
 
-
 WASM_CPPFLAGS = $(INCLUDES)
-#WASM_CPPFLAGS += -g
 WASM_CPPFLAGS += -Wall -Wformat -Os
 WASM_CPPFLAGS += $(WASM_EMS) -DWASM_BUILD
 WASM_LIBS += $(WASM_EMS)
@@ -59,8 +62,11 @@ PORT_CC = gcc
 PORT_CXX = g++
 PORT_EXE = $(PORT_BUILD_DIR)/app_executable
 LINUX_GL_LIBS = -lGLESv2
-PORT_CXXFLAGS = $(INCLUDES)
-PORT_CXXFLAGS += -g -Wall -Wformat
+PORT_CXXFLAGS = $(PORT_INCLUDES)
+# Debugging:
+PORT_CXXFLAGS += -Wall -Wformat -g -Og 
+# Release:
+#PORT_CXXFLAGS += -O2
 PORT_LIBS =
 PORT_CXXFLAGS += -DIMGUI_IMPL_OPENGL_ES2
 
@@ -94,7 +100,9 @@ endif
 
 
 WASM_OBJS = $(addprefix $(WASM_BUILD_DIR)/, $(addsuffix .o, $(basename $(notdir $(SOURCES)))))
-PORT_OBJS = $(addprefix $(PORT_BUILD_DIR)/, $(addsuffix .o, $(basename $(notdir $(SOURCES)))))
+PORT_OBJS = $(addprefix $(PORT_BUILD_DIR)/, $(addsuffix .o, $(basename $(notdir $(PORT_SOURCES)))))
+
+ICON = favicon.ico
 
 ##---------------------------------------------------------------------
 ## BUILD RULES
@@ -106,7 +114,7 @@ $(WEB_DIR):
 $(WASM_BUILD_DIR):
 	mkdir -p $@
 
-$(WASM_EXE): $(WASM_BUILD_DIR) $(WASM_OBJS) $(WEB_DIR) 
+$(WASM_EXE): $(WASM_BUILD_DIR) $(WASM_OBJS) $(WEB_DIR) $(WEB_DIR)/favicon.ico
 	$(WASM_CXX) -o $@ $(WASM_OBJS) $(WASM_LIBS) $(WASM_LDFLAGS)
 	@echo Building for WEB completed
 
@@ -128,6 +136,8 @@ $(WASM_BUILD_DIR)/%.o:../libs/gl3w/GL/%.c
 $(WASM_BUILD_DIR)/%.o:$(IMPLOT_DIR)/%.cpp
 	$(WASM_CXX) $(WASM_CPPFLAGS) $(WASM_CXXFLAGS) -c -o $@ $<
 
+$(WEB_DIR)/favicon.ico: $(ICON)
+	cp $(ICON) $(WEB_DIR)/favicon.ico
 
 $(PORT_BUILD_DIR):
 	mkdir -p $@
@@ -149,6 +159,9 @@ $(PORT_BUILD_DIR)/%.o:$(IMGUI_DIR)/backends/%.cpp
 	$(PORT_CXX) $(PORT_CXXFLAGS) -c -o $@ $<
 
 $(PORT_BUILD_DIR)/%.o:$(IMPLOT_DIR)/%.cpp
+	$(PORT_CXX) $(PORT_CXXFLAGS) -c -o $@ $<
+
+$(PORT_BUILD_DIR)/%.o:$(FD_DIR)/%.cpp
 	$(PORT_CXX) $(PORT_CXXFLAGS) -c -o $@ $<
 
 portable: $(PORT_EXE)
