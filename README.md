@@ -27,7 +27,6 @@ https://ppelikan.github.io/drlut
 ```
 To fix:
 * triangle generation sometimes exceeds requested amplitude
-* provide save to file button implementation
 * add array size computation in bytes/kbytes/megabytes and widget to display it
 * add typical DSP window functions: Hamming, Hann, Blackman, Flat-top, Blackman-Harris etc.
 * output text - horizontal scrolling missing

@@ -247,6 +247,7 @@ void loopGUI_main()
     {
 #ifdef WASM_BUILD
         js_save_as_file(Builder.OutputText.c_str());
+        popup();
 #else
         ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File Name", ".h,.hpp,.c,.cpp,.txt,.", ".h");
 #endif
