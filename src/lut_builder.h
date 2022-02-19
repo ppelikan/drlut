@@ -49,7 +49,7 @@ public:
         {"sawtooth reversed", "1-(t%T)/T"},
         {"triangle", "2*abs(t/T-floor(t/T+1/2))"},
         {"white noise", "rand"},
-        {"gauss", "exp(-pow((t/T)*2*3-3,2)/(2*pow(0.8,2)))"},
+        {"gauss", "exp(-((2*3*t/T-3)^2)/(2*0.8^2))"},
         {"hamming", "0.5-0.4*cos((2*pi*t)/(T-1))"},
         {"hann", "0.5*(1-cos((2*pi*t)/(T-1)))"},
         {"bartlett", "1-abs((t-(T-1)/2)/((T-1)/2))"},

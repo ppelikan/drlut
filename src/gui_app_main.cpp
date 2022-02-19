@@ -155,11 +155,8 @@ void loopGUI_main()
         bool ferr = Builder.formulaError;
         if (ferr)
         {
-            // ImGui::PushID(0);
             ImGui::PushStyleColor(ImGuiCol_FrameBg, (ImVec4)ImColor::HSV(7.0f, 0.9f, 0.6f));
             ImGui::PushStyleColor(ImGuiCol_TextSelectedBg, (ImVec4)ImColor::HSV(7.0f, 0.6f, 0.9f));
-            // ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, (ImVec4)ImColor::HSV(7.0f, 0.8f, 0.8f));
-            // ImGui::PushStyleColor(ImGuiCol_FrameBgActive, (ImVec4)ImColor::HSV(7.0f, 0.8f, 0.8f));
         }
         ImVec2 formulaDImensions = GetContentRegionAvail();
         formulaDImensions.y = 20;
@@ -168,10 +165,7 @@ void loopGUI_main()
             generate();
         }
         if (ferr)
-        {
             ImGui::PopStyleColor(2);
-            // ImGui::PopID();
-        }
 
         if (InputScalar("Samples per period", ImGuiDataType_U32, &Builder.samplesPerPeriod, &step, &stepFast, "%u"))
         {

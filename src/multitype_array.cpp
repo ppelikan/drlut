@@ -14,7 +14,7 @@
 
 #include "multitype_array.h"
 
-template <typename... Args> // todo - replace with C++20's std::format in the future (not avaiable yet)
+template <typename... Args> // todo - replace with C++20's std::format in the future (not available yet)
 std::string string_format(const std::string &format, Args... args)
 {
     size_t size = snprintf(nullptr, 0, format.c_str(), args...) + 1; // extra space for '\0'

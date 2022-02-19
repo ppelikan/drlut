@@ -6,7 +6,7 @@
 **/
 #pragma once
 
-#define WINDOW_W 850
+#define WINDOW_W 900
 #define WINDOW_H 600
 
 void initGUI_main();

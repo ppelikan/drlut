@@ -130,7 +130,7 @@ $(WEB_DIR):
 $(WASM_BUILD_DIR):
 	mkdir -p $@
 
-$(WASM_EXE): $(WASM_BUILD_DIR) $(WASM_OBJS) $(WEB_DIR) $(WEB_DIR)/favicon.ico
+$(WASM_EXE): $(WASM_BUILD_DIR) $(WASM_OBJS) $(WEB_DIR) $(WEB_DIR)/favicon.ico shell.html
 	$(WASM_CXX) -o $@ $(WASM_OBJS) $(WASM_LIBS) $(WASM_LDFLAGS)
 	@echo Building for WEB completed
 

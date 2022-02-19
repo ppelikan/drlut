@@ -15,7 +15,7 @@
       margin: 0;
       background-color: #1b262c;
       color: #3282b8;
-      font: normal 11px Arial, sans-serif;
+      font: normal 12px Arial, sans-serif;
     }
 
     a:link {
@@ -56,7 +56,7 @@
     <h2>Online Lookup Table Generator</h2>
     <br><br>
     <div class="emscripten_border">
-      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" width="850" height="600"></canvas>
+      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" width="900" height="600"></canvas>
       <script type='text/javascript'>
         var Module = {
           preRun: [],
@@ -91,6 +91,19 @@
     </div>
     <br><br>
     <div class="description" align="left">
+      <center><big>Formula:</big></center><br>
+      Variables:<br>
+      <tt>t</tt> - current sample index (from 0 to T)<br>
+      <tt>T</tt> - number of samples per one perdiod<br>
+      <tt>rand</tt> - random number (from -1.0 to 1.0)<br><br>
+      Constants:<br>
+      <tt>pi</tt>, <tt>e</tt><br><br>
+      Functions:<br>
+      <tt>abs(x), acos(x), asin(x), atan(x), atan2(x,y), ceil(x), cos(x),<br>
+      cosh(x),exp(x), fac(x), floor(x), ln(x), log(x), log10(x), ncr(x,y),<br>
+      npr(x,y), pow(x,y), sin(x), sinh(x), sqrt(x), tan(x), tanh(x)</tt>.<br><br>
+      Operators:<br>
+      <tt>+, -, *, /, ^, %, (, ), , </tt><br><br>
       <center><big>Tips:</big></center><br>
       Use <tt>Ctrl</tt> key when clicking the <tt>+</tt> or <tt>-</tt> buttons for bigger increment or decrement
       step.<br><br>
@@ -99,14 +112,15 @@
       Right click on the plot to see more options.<br>
       When auto fit option is disabled, double click on the plot to auto fit the view.<br><br>
       Use negative amplitude values to mirror vertically the wave shape.<br><br>
-      Use <tt>zeros</tt> waveform and input any offset value to fill array with equal values.<br>
     </div>
     <br>
     <br>
     <a target="_blank" rel="noopener noreferrer"
       href="https://github.com/ppelikan/drlut">https://github.com/ppelikan/drlut</a>
     <br><br>
-    <small>Copyright (c) <script>document.write(new Date().getFullYear())</script> by ppelikan</small><br><br>
+    <small>Copyright (c)
+      <script>document.write(new Date().getFullYear())</script> by ppelikan
+    </small><br><br>
   </center>
 </body>
 

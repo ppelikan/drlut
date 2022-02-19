@@ -7,17 +7,17 @@ https://ppelikan.github.io/drlut
 
 
 ## Features:
-* avaiable waveforms:
-  * zeros, sin, cos, tan, ctan, sawtooth, triangle, white noise, gauss
-* avaiable output array formats:
+* waveform formula live editing feature (C/C++ compatible syntax)
+* available waveform presets:
+  * zeros, sin, cos, tan, ctan, sawtooth, triangle, white noise, gauss, hamming, hann, bartlett, flat top, sigmoid
+* available output array formats:
   * signed: int8, int16, int32, float (double)
   * unsigned: uint8, uint16, uint32
 * configurable amplitude and y-axis offset
-* selectable range behaviour:
-  * int overflow or int saturation
+* selectable int range behaviour:
+  * overflow or saturation
 * selectable array output format:
   * hexadecimal or decimal
-* copy to clipboard option
 
 
 ---
@@ -29,6 +29,7 @@ todo:
 * add array size computation in bytes/kbytes/megabytes and widget to display it
 * "warning: 'BeginPlot' is deprecated"
 * move some logic from gui_app_main.cpp to lut_builder.cpp
+* simplify MultitypeArray.to_string() implementation (for float and uint32 variants)
 ```
 
 ## Building
