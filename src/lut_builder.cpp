@@ -1,9 +1,9 @@
 /**
  *  Dr.LUT - Lookup Table Generator
- * 
+ *
  *  Copyright (c) 2021 by ppelikan
  *  github.com/ppelikan
-**/
+ **/
 #include <algorithm>
 #include <string>
 #include "lut_builder.h"
@@ -42,9 +42,14 @@ void LutBuilder::generate()
         arraySize = 1;
     if (samplesPerPeriod < 1)
         samplesPerPeriod = 1;
-    GeneratorConfig cfg{Table.vector_double(), selectedWaveType, samplesPerPeriod};
+    GeneratorConfig cfg{Table.vector_double(), formulaText, samplesPerPeriod};
     Table.resize(arraySize);
-    WaveGenerator::generate(cfg);
+    formulaError = WaveGenerator::generate(cfg);
+    if (formulaError)
+    {
+        Table.resize(1);
+        return;
+    }
     executePostprocessing();
     executeTypeConversion();
 }
@@ -57,6 +62,8 @@ double *LutBuilder::peekWaveGetTable()
 void LutBuilder::buildLut()
 {
     generate();
+    if (formulaError)
+        return;
 
     const std::map<DataType, std::string> typeName{
         {DataType::eINT8, "int8_t"},
@@ -68,21 +75,10 @@ void LutBuilder::buildLut()
         {DataType::eFLOAT, "float_t"},
         {DataType::eDOUBLE, "double_t"}};
 
-    const std::map<WaveformType, std::string> waveName{
-        {WaveformType::eZEROS, "zeros"},
-        {WaveformType::eSIN, "sin"},
-        {WaveformType::eCOS, "cos"},
-        {WaveformType::eTAN, "tan"},
-        {WaveformType::eCTG, "ctg"},
-        {WaveformType::eSAWTOOTH, "sawtooth"},
-        {WaveformType::eSAWTOOTHR, "sawtooth_r"},
-        {WaveformType::eTRIANGLE, "triangle"},
-        {WaveformType::eNOISE, "noise"},
-        {WaveformType::eGAUSS, "gauss"}};
-
     OutputText.clear();
-    OutputText = "/* Generated using Dr LUT - Free Lookup Table Generator  */ \n/* https://github.com/ppelikan/drlut  */ \n\n";
-    OutputText += "const " + typeName.at(Table.type) + " lut_"+waveName.at(selectedWaveType)+"[" + std::to_string(Table.size()) + "] = { \n";
+    OutputText = "/** Generated using Dr LUT - Free Lookup Table Generator\n  * https://github.com/ppelikan/drlut\n  **/\n";
+    OutputText += "// Formula: " + formulaText + " \n";
+    OutputText += "const " + typeName.at(Table.type) + " lut[" + std::to_string(Table.size()) + "] = {\n";
     OutputText += Table.to_string();
-    OutputText += " }; \n\n";
+    OutputText += " };\n\n";
 }

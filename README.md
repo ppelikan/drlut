@@ -25,13 +25,10 @@ https://ppelikan.github.io/drlut
 
 
 ```
-To fix:
-* triangle generation sometimes exceeds requested amplitude
+todo:
 * add array size computation in bytes/kbytes/megabytes and widget to display it
-* add typical DSP window functions: Hamming, Hann, Blackman, Flat-top, Blackman-Harris etc.
-* output text - horizontal scrolling missing
-* plot disappears for more than 5121 datapoints (ugly workaround)
-* on WASM version copy to clipboard uses ugly workaround
+* "warning: 'BeginPlot' is deprecated"
+* move some logic from gui_app_main.cpp to lut_builder.cpp
 ```
 
 ## Building

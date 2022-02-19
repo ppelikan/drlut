@@ -1,26 +1,16 @@
 /**
  *  Dr.LUT - Lookup Table Generator
- * 
+ *
  *  Copyright (c) 2021 by ppelikan
  *  github.com/ppelikan
-**/
+ **/
 #include <algorithm>
 #include <cmath>
+#include "tinyexpr.h"
 #include "wave_generator.h"
 
-std::mt19937 *WaveGenerator::Gen;
-
-const std::map<WaveformType, std::function<void(GeneratorConfig)>> WaveGenerator::dispatcher{
-    {WaveformType::eZEROS, generateZeros},
-    {WaveformType::eSIN, generateSin},
-    {WaveformType::eCOS, generateCos},
-    {WaveformType::eTAN, generateTan},
-    {WaveformType::eCTG, generateCtg},
-    {WaveformType::eSAWTOOTH, generateSawtooth},
-    {WaveformType::eSAWTOOTHR, generateSawtoothRev},
-    {WaveformType::eTRIANGLE, generateTriangle},
-    {WaveformType::eNOISE, generateNoise},
-    {WaveformType::eGAUSS, generateGauss}};
+std::mt19937 *Gen;
+std::uniform_real_distribution<double> distr(-1.0, 1.0);
 
 void WaveGenerator::init()
 {
@@ -30,95 +20,24 @@ void WaveGenerator::init()
     Gen = new std::mt19937(rd()); // seed the generator
 }
 
-void WaveGenerator::generateZeros(GeneratorConfig cfg)
+double randD()
 {
-    std::fill(cfg.SampleArray.begin(), cfg.SampleArray.end(), 0.0f);
+    return distr(*Gen);
 }
 
-void WaveGenerator::generateSin(GeneratorConfig cfg)
+bool WaveGenerator::generate(GeneratorConfig config)
 {
-    for (size_t i = 0; i < cfg.SampleArray.size(); ++i)
+    double x, maxx = (double)config.samplesPerPeriod;
+    te_variable vars[] = {{"t", &x}, {"T", &maxx}, {"rand", (const void*)randD, TE_FUNCTION0}};
+    int err;
+    te_expr *expr = te_compile(config.formula.c_str(), vars, 3, &err);
+    if (!expr)
+        return true;
+    for (size_t i = 0; i < config.SampleArray.size(); ++i)
     {
-        cfg.SampleArray[i] = sin((double)i * 2.0 * M_PI / (double)cfg.samplesPerPeriod);
+        x = (double)i;
+        config.SampleArray[i] = te_eval(expr);
     }
-}
-
-void WaveGenerator::generateCos(GeneratorConfig cfg)
-{
-    for (size_t i = 0; i < cfg.SampleArray.size(); ++i)
-    {
-        cfg.SampleArray[i] = cos((double)i * 2.0 * M_PI / (double)cfg.samplesPerPeriod);
-    }
-}
-
-void WaveGenerator::generateTan(GeneratorConfig cfg)
-{
-    for (size_t i = 0; i < cfg.SampleArray.size(); ++i)
-    {
-        cfg.SampleArray[i] = tan((double)i * M_PI / (double)cfg.samplesPerPeriod);
-    }
-}
-
-void WaveGenerator::generateCtg(GeneratorConfig cfg)
-{
-    for (size_t i = 0; i < cfg.SampleArray.size(); ++i)
-    {
-        cfg.SampleArray[i] = tan(M_PI / 2.0 - (double)i * M_PI / (double)cfg.samplesPerPeriod);
-    }
-}
-
-void WaveGenerator::generateSawtooth(GeneratorConfig cfg)
-{
-    uint32_t pos{0};
-    for (size_t i = 0; i < cfg.SampleArray.size(); ++i)
-    {
-        cfg.SampleArray[i] = ((double)pos / ((double)cfg.samplesPerPeriod) * 2.0) - 1.0;
-        pos++;
-        pos = pos % cfg.samplesPerPeriod;
-    }
-}
-
-void WaveGenerator::generateSawtoothRev(GeneratorConfig cfg)
-{
-    uint32_t pos{0};
-    for (size_t i = 0; i < cfg.SampleArray.size(); ++i)
-    {
-        cfg.SampleArray[i] = -((double)pos / ((double)cfg.samplesPerPeriod) * 2.0) + 1.0;
-        pos++;
-        pos = pos % cfg.samplesPerPeriod;
-    }
-}
-
-void WaveGenerator::generateTriangle(GeneratorConfig cfg)
-{
-    uint32_t pos{0};
-    for (size_t i = 0; i < cfg.SampleArray.size(); ++i)
-    {
-        cfg.SampleArray[i] = -std::abs(((double)pos / ((double)cfg.samplesPerPeriod) * 2.0) - 1.0) * 2.0 + 1.0;
-        pos++;
-        pos = pos % cfg.samplesPerPeriod;
-    }
-}
-
-void WaveGenerator::generateNoise(GeneratorConfig cfg)
-{
-    std::uniform_real_distribution<double> distr(-1.0, 1.0);
-    std::generate(cfg.SampleArray.begin(), cfg.SampleArray.end(), [&]()
-                  { return distr(*Gen); });
-}
-
-void WaveGenerator::generateGauss(GeneratorConfig cfg)
-{
-    static const double range{0.5};
-    static const double c{0.2}; // this value being const is an temporary solution
-    for (size_t i = 0; i < cfg.SampleArray.size(); ++i)
-    {
-        double x = (double)i * 2.0 * range / (double)cfg.samplesPerPeriod - range;
-        cfg.SampleArray[i] = exp(-(x*x)/(2*c*c));
-    }
-}
-
-void WaveGenerator::generate(GeneratorConfig config)
-{
-    dispatcher.at(config.waveType)(config);
+    te_free(expr);
+    return false;
 }

@@ -38,7 +38,7 @@ EM_JS(void, js_save_as_file, (const char *str),
 #include "ImGuiFileDialog.h"
 #endif
 
-std::map<DataType, float> DefaultAmplitude{
+static std::map<DataType, float> DefaultAmplitude{
     {DataType::eINT8, INT8_MAX},
     {DataType::eINT16, INT16_MAX},
     {DataType::eINT32, INT32_MAX},
@@ -48,7 +48,7 @@ std::map<DataType, float> DefaultAmplitude{
     {DataType::eFLOAT, 1.0},
     {DataType::eDOUBLE, 1.0}};
 
-std::map<DataType, float> DefaultOffset{
+static std::map<DataType, float> DefaultOffset{
     {DataType::eINT8, 0.0},
     {DataType::eINT16, 0.0},
     {DataType::eINT32, 0.0},
@@ -62,6 +62,8 @@ static const float spacingY{6.0f};
 static const uint32_t step{1};
 static const uint32_t stepFast{10};
 static const int sizeMax{100000};
+static char formula_str[512];
+static std::vector<char> PresetList;
 
 LutBuilder Builder;
 
@@ -81,11 +83,23 @@ void generate()
 {
     if (Builder.arraySize > sizeMax)
         Builder.arraySize = sizeMax;
+    Builder.formulaText.assign(formula_str);
     Builder.generate();
 }
 
 void initGUI_main()
 {
+    size_t s = 0;
+    for (auto p : Builder.Presets)
+        s += p.first.length() + 1;
+    PresetList.resize(s + 2);
+    s = 0;
+    for (auto p : Builder.Presets)
+    {
+        strcpy(&PresetList.at(s), p.first.c_str());
+        s += p.first.length() + 1;
+    }
+    strcpy(formula_str, Builder.Presets.at(Builder.selectedPreset).second.c_str());
     generate();
 }
 
@@ -123,7 +137,7 @@ void loopGUI_main()
     SetNextWindowPos(viewport->Pos);
     SetNextWindowSize(viewport->Size);
 
-    Begin("Dr. LUT", NULL, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings);
+    Begin("Dr LUT", NULL, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings);
 
     BeginTable("tab1", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable);
     TableNextColumn();
@@ -132,9 +146,34 @@ void loopGUI_main()
     if (CollapsingHeader("Waveform properties", ImGuiTreeNodeFlags_DefaultOpen))
     {
         Dummy(ImVec2(0, spacingY));
-        if (Combo("Waveform type", reinterpret_cast<int *>(&Builder.selectedWaveType), "zeros\0sin\0cos\0tan\0ctg\0sawtooth\0sawtooth reversed\0triangle\0white noise\0gauss\0\0"))
+        if (Combo("Formula preset", &Builder.selectedPreset, PresetList.data()))
+        {
+            strcpy(formula_str, Builder.Presets.at(Builder.selectedPreset).second.c_str());
             generate();
-        if (ImGui::InputScalar("Samples per period", ImGuiDataType_U32, &Builder.samplesPerPeriod, &step, &stepFast, "%u"))
+        }
+
+        bool ferr = Builder.formulaError;
+        if (ferr)
+        {
+            // ImGui::PushID(0);
+            ImGui::PushStyleColor(ImGuiCol_FrameBg, (ImVec4)ImColor::HSV(7.0f, 0.9f, 0.6f));
+            ImGui::PushStyleColor(ImGuiCol_TextSelectedBg, (ImVec4)ImColor::HSV(7.0f, 0.6f, 0.9f));
+            // ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, (ImVec4)ImColor::HSV(7.0f, 0.8f, 0.8f));
+            // ImGui::PushStyleColor(ImGuiCol_FrameBgActive, (ImVec4)ImColor::HSV(7.0f, 0.8f, 0.8f));
+        }
+        ImVec2 formulaDImensions = GetContentRegionAvail();
+        formulaDImensions.y = 20;
+        if (InputTextMultiline("Formula", formula_str, IM_ARRAYSIZE(formula_str), formulaDImensions))
+        {
+            generate();
+        }
+        if (ferr)
+        {
+            ImGui::PopStyleColor(2);
+            // ImGui::PopID();
+        }
+
+        if (InputScalar("Samples per period", ImGuiDataType_U32, &Builder.samplesPerPeriod, &step, &stepFast, "%u"))
         {
             if (Builder.samplesPerPeriod > sizeMax)
                 keepOnePeriod = false;
@@ -185,7 +224,7 @@ void loopGUI_main()
         Dummy(ImVec2(textpos.x * 0.6666 - 68.0, 0.0f));
         SameLine();
         Text("Range behaviour");
-        if (ImGui::InputScalar("Array size", ImGuiDataType_U32, &Builder.arraySize, &step, &stepFast, "%u"))
+        if (InputScalar("Array size", ImGuiDataType_U32, &Builder.arraySize, &step, &stepFast, "%u"))
         {
             if (Builder.arraySize > sizeMax)
                 Builder.arraySize = sizeMax;
@@ -211,18 +250,32 @@ void loopGUI_main()
         if (plotDimensions.y < 50.0f)
             plotDimensions.y = 50.0f;
 
-        ImPlotAxisFlags plotflag = ImPlotAxisFlags_NoLabel | ImPlotAxisFlags_AutoFit;
-        ImPlotFlags plotflag2 = ImPlotFlags_NoTitle | ImPlotFlags_NoLegend;
-        if (ImPlot::BeginPlot("##plot", "", "", plotDimensions, plotflag2, plotflag, plotflag))
+        if (Builder.arraySize <= 5121) // todo - drawing more datapoints is currently not supported
         {
-            if (Builder.arraySize <= 4000) // todo - drawing more datapoints is currently not supported
-                ImPlot::SetNextMarkerStyle(ImPlotMarker_Square, 2.0f);
-            if (Builder.arraySize <= 5121) // todo - drawing more datapoints is currently not supported
+            ImPlotAxisFlags plotflag = ImPlotAxisFlags_NoLabel | ImPlotAxisFlags_AutoFit;
+            ImPlotFlags plotflag2 = ImPlotFlags_NoTitle | ImPlotFlags_NoLegend;
+            if (ImPlot::BeginPlot("##plot", "", "", plotDimensions, plotflag2, plotflag, plotflag))
+            {
+                if (Builder.arraySize <= 4000) // todo - drawing more datapoints is currently not supported
+                    ImPlot::SetNextMarkerStyle(ImPlotMarker_Square, 2.0f);
                 ImPlot::PlotStairs("##plot_line", Builder.peekWaveGetTable(), Builder.arraySize);
-            ImPlot::EndPlot();
+
+                ImPlot::EndPlot();
+            }
+        }
+        else
+        {
+            Text("Please notice!");
+            Text("Plot is supported only for");
+            Text("array sizes up to 5121.");
+#ifdef WASM_BUILD
+            Text("'Copy to clipboard' option is");
+            Text("only supported up to 99999");
+            Text("number of characters.");
+            Text("Use 'Save as file' instead.");
+#endif
         }
     }
-
     EndChild();
     TableNextColumn();
     BeginChild("child2", ImVec2(0, 0), false);

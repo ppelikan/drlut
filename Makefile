@@ -6,8 +6,9 @@
 
 IMGUI_DIR = ../imgui
 IMPLOT_DIR = ../implot
-FD_DIR = ext/ImGuiFileDialog
 SRC_DIR = src
+TE_DIR = ext/TinyExpr
+FD_DIR = ext/ImGuiFileDialog
 
 SOURCES = $(SRC_DIR)/main.cpp\
 		  $(SRC_DIR)/gui_app_main.cpp\
@@ -23,12 +24,14 @@ SOURCES += $(IMGUI_DIR)/imgui.cpp\
 		   $(IMGUI_DIR)/backends/imgui_impl_sdl.cpp\
 		   $(IMGUI_DIR)/backends/imgui_impl_opengl3.cpp\
 		   $(IMPLOT_DIR)/implot.cpp\
-		   $(IMPLOT_DIR)/implot_items.cpp
+		   $(IMPLOT_DIR)/implot_items.cpp\
+		   $(TE_DIR)/tinyexpr.c
 
 INCLUDES = -I$(IMGUI_DIR)\
 		   -I$(IMGUI_DIR)/misc/cpp\
 		   -I$(IMGUI_DIR)/backends\
-		   -I$(IMPLOT_DIR)
+		   -I$(IMPLOT_DIR)\
+		   -I$(TE_DIR)
 
 PORT_SOURCES = $(SOURCES) $(FD_DIR)/ImGuiFileDialog.cpp
 PORT_INCLUDES = $(INCLUDES) -I$(FD_DIR)
@@ -41,11 +44,11 @@ WASM_CC = emcc
 WASM_CXX = em++
 WEB_DIR = $(WASM_BUILD_DIR)/web
 WASM_EXE = $(WEB_DIR)/index.html
-WASM_EMS += -s USE_SDL=2 -s WASM=1
-WASM_EMS += -s ALLOW_MEMORY_GROWTH=1
-WASM_EMS += -s DISABLE_EXCEPTION_CATCHING=1 -s NO_EXIT_RUNTIME=0
-WASM_EMS += -s ASSERTIONS=1
-WASM_EMS += -s NO_FILESYSTEM=1 -DIMGUI_DISABLE_FILE_FUNCTIONS
+WASM_EMS += -s USE_SDL=2
+WASM_EMS += -s DISABLE_EXCEPTION_CATCHING=1
+# WASM_EMS += -s WASM=1 -s ALLOW_MEMORY_GROWTH=1
+# WASM_EMS += -s ASSERTIONS=1 -s NO_FILESYSTEM=1 -s NO_EXIT_RUNTIME=0
+WASM_EMS += -DIMGUI_DISABLE_FILE_FUNCTIONS
 
 WASM_CPPFLAGS = $(INCLUDES)
 WASM_CPPFLAGS += -Wall -Wformat -Os
@@ -64,7 +67,7 @@ PORT_EXE = $(PORT_BUILD_DIR)/app_executable
 LINUX_GL_LIBS = -lGLESv2
 PORT_CXXFLAGS = $(PORT_INCLUDES)
 # Debugging:
-PORT_CXXFLAGS += -Wall -Wformat -g -Og 
+PORT_CXXFLAGS += -Wall -Wformat -g
 # Release:
 #PORT_CXXFLAGS += -O2
 PORT_LIBS =
@@ -108,6 +111,19 @@ ICON = favicon.ico
 ## BUILD RULES
 ##---------------------------------------------------------------------
 
+all: $(PORT_EXE) $(WASM_EXE)
+	@echo Build ALL completed
+
+portable: $(PORT_EXE)
+
+web: $(WASM_EXE)
+
+serve: $(WASM_EXE)
+	python3 -m http.server -d $(WEB_DIR)
+
+clean:
+	rm -rf $(WASM_OBJS) $(WEB_DIR) $(WASM_BUILD_DIR) $(PORT_BUILD_DIR)
+
 $(WEB_DIR):
 	mkdir $@
 
@@ -135,6 +151,9 @@ $(WASM_BUILD_DIR)/%.o:../libs/gl3w/GL/%.c
 
 $(WASM_BUILD_DIR)/%.o:$(IMPLOT_DIR)/%.cpp
 	$(WASM_CXX) $(WASM_CPPFLAGS) $(WASM_CXXFLAGS) -c -o $@ $<
+
+$(WASM_BUILD_DIR)/%.o:$(TE_DIR)/%.c
+	$(WASM_CC) $(WASM_CPPFLAGS) $(WASM_CXXFLAGS) -c -o $@ $<
 
 $(WEB_DIR)/favicon.ico: $(ICON)
 	cp $(ICON) $(WEB_DIR)/favicon.ico
@@ -164,15 +183,5 @@ $(PORT_BUILD_DIR)/%.o:$(IMPLOT_DIR)/%.cpp
 $(PORT_BUILD_DIR)/%.o:$(FD_DIR)/%.cpp
 	$(PORT_CXX) $(PORT_CXXFLAGS) -c -o $@ $<
 
-portable: $(PORT_EXE)
-
-web: $(WASM_EXE)
-
-all: $(PORT_EXE) $(WASM_EXE)
-	@echo Build ALL completed
-
-serve: $(WASM_EXE)
-	python3 -m http.server -d $(WEB_DIR)
-
-clean:
-	rm -rf $(WASM_OBJS) $(WEB_DIR) $(WASM_BUILD_DIR) $(PORT_BUILD_DIR)
+$(PORT_BUILD_DIR)/%.o:$(TE_DIR)/%.c
+	$(PORT_CC) $(PORT_CXXFLAGS) -c -o $@ $<
