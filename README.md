@@ -7,7 +7,7 @@ https://ppelikan.github.io/drlut
 
 
 ## Features:
-* waveform formula live editing feature (C/C++ compatible syntax)
+* live editing of waveform formula (C/C++ compatible syntax)
 * available waveform presets:
   * zeros, sin, cos, tan, ctan, sawtooth, triangle, white noise, gauss, hamming, hann, bartlett, flat top, sigmoid
 * available output array formats:
@@ -30,6 +30,7 @@ todo:
 * "warning: 'BeginPlot' is deprecated"
 * move some logic from gui_app_main.cpp to lut_builder.cpp
 * simplify MultitypeArray.to_string() implementation (for float and uint32 variants)
+* fix broken comments for formulas containing `\n` characters (buildLut() function)
 ```
 
 ## Building
