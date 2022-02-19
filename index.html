@@ -13,9 +13,9 @@
   <style>
     body {
       margin: 0;
-      background-color: #1b262c;
-      color: #3282b8;
-      font: normal 11px Arial, sans-serif;
+      background-color: #141d22;
+      color: #56a7dd;
+      font: normal 12px Arial, sans-serif;
     }
 
     a:link {
@@ -51,12 +51,11 @@
   <textarea id="clipboard_text_aera" type=hidden
     style="width:0;height:0;border:0;resize:none;margin-top:-60px;position:absolute;" aria-hidden="true"></textarea>
   <center>
-    <br>
     <h1>Dr LUT</h1>
-    <h2>Online Lookup Table Generator</h2>
-    <br><br>
+    <h2>Online DSP Lookup Table Generator</h2>
+    Just write any math expression and get the generated C/C++ header file with data array inside.<br><br>
     <div class="emscripten_border">
-      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" width="850" height="550"></canvas>
+      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" width="900" height="600"></canvas>
       <script type='text/javascript'>
         var Module = {
           preRun: [],
@@ -92,24 +91,38 @@
     <br><br>
     <div class="description" align="left">
       <center><big>Tips:</big></center><br>
-      Use <tt>Ctrl</tt> key when clicking the <tt>+</tt> or <tt>-</tt> buttons for bigger increment or decrement
+      When composing complex formulas, switch first to <tt>float</tt> data type to avoid confusion.<br><br>
+      Use <tt>Ctrl</tt> key when clicking the <tt>+</tt> or <tt>-</tt> buttons for a bigger increment or decrement
       step.<br><br>
-      Select any number in desired textfield and write <tt>*2</tt> to multiply the value by two.<br>
-      Avaiable operators:<tt> *</tt>,<tt> /</tt>,<tt> +</tt>,<tt> -</tt>.<br><br>
+      Select any number in the desired textfield and write e.g. <tt>*2</tt> to multiply the value by two.<br>
+      Available operators:<tt> *</tt>,<tt> /</tt>,<tt> +</tt>,<tt> -</tt>.<br><br>
       Right click on the plot to see more options.<br>
-      When auto fit option is disabled, double click on the plot to auto fit the view.<br><br>
+      When the auto fit option is disabled, double click on the plot to auto fit the view.<br><br>
       Use negative amplitude values to mirror vertically the wave shape.<br><br>
-      Use <tt>zeros</tt> waveform and input any offset value to fill array with equal values.<br>
+      <center><big>Available formula utils:</big></center><br>
+      Variables:<br>
+      <tt>t</tt> - current sample index (from 0 to T)<br>
+      <tt>T</tt> - number of samples per one period<br>
+      <tt>rand</tt> - fresh random number (from -1.0 to 1.0)<br><br>
+      Constants:<br>
+      <tt>pi</tt>, <tt>e</tt><br><br>
+      Functions:<br>
+      <tt>abs(x), acos(x), asin(x), atan(x), atan2(x,y), ceil(x), cos(x),<br>
+      cosh(x), exp(x), fac(x), floor(x), ln(x), log(x), log10(x), ncr(x,y),<br>
+      npr(x,y), pow(x,y), sin(x), sinh(x), sqrt(x), tan(x), tanh(x)</tt>.<br><br>
+      Operators:<br>
+      <tt>+, -, *, /, ^, %, (, ), , </tt><br><br>
     </div>
     <br>
     <br>
     <a target="_blank" rel="noopener noreferrer"
       href="https://github.com/ppelikan/drlut">https://github.com/ppelikan/drlut</a>
     <br><br>
-    <small>Copyright (c) <script>document.write(new Date().getFullYear())</script> by ppelikan</small><br><br>
+    <small>Copyright (c)
+      <script>document.write(new Date().getFullYear())</script> by ppelikan
+    </small><br><br>
   </center>
 </body>
 
 </html>
-
 
