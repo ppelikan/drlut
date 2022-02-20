@@ -6,10 +6,7 @@
 **/
 #pragma once
 
-
-#include <functional>
 #include <vector>
-#include <random>
 
 struct GeneratorConfig
 {

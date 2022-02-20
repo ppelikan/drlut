@@ -4,7 +4,7 @@
  *  Copyright (c) 2021 by ppelikan
  *  github.com/ppelikan
 **/
-#include <stdio.h>
+#include <cstdio>
 #include <SDL.h>
 
 #ifdef WASM_BUILD

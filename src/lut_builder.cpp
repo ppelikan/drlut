@@ -5,7 +5,6 @@
  *  github.com/ppelikan
  **/
 #include <algorithm>
-#include <string>
 #include "lut_builder.h"
 
 void LutBuilder::executePostprocessing()
@@ -58,6 +57,12 @@ double *LutBuilder::peekWaveGetTable()
 {
     return Table.c_array();
 }
+
+void LutBuilder::applyDefaults()
+{
+    amplitudeDouble = DefaultAmplitude.at(Table.type);
+    offsetDouble = DefaultOffset.at(Table.type);
+};
 
 void LutBuilder::buildLut()
 {

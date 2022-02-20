@@ -7,9 +7,7 @@
 #pragma once
 
 #include <vector>
-#include <cstdint>
 #include <string>
-#include <string.h>
 #include "wave_generator.h"
 #include "multitype_array.h"
 
@@ -19,11 +17,31 @@ enum class CastMethod
     eSATURATE
 };
 
-// thic class provides separation between GUI and computation logic
+// this class provides separation between GUI and computation logic
 // also, i'm terrible at picking proper names
 class LutBuilder
 {
 private:
+    const std::map<DataType, float> DefaultAmplitude{
+        {DataType::eINT8, INT8_MAX},
+        {DataType::eINT16, INT16_MAX},
+        {DataType::eINT32, INT32_MAX},
+        {DataType::eUINT8, INT8_MAX},
+        {DataType::eUINT16, INT16_MAX},
+        {DataType::eUINT32, INT32_MAX},
+        {DataType::eFLOAT, 1.0},
+        {DataType::eDOUBLE, 1.0}};
+
+    const std::map<DataType, float> DefaultOffset{
+        {DataType::eINT8, 0.0},
+        {DataType::eINT16, 0.0},
+        {DataType::eINT32, 0.0},
+        {DataType::eUINT8, INT8_MAX},
+        {DataType::eUINT16, INT16_MAX},
+        {DataType::eUINT32, INT32_MAX},
+        {DataType::eFLOAT, 0.0},
+        {DataType::eDOUBLE, 0.0}};
+
     void executePostprocessing();
     void executeTypeConversion();
 
@@ -60,5 +78,6 @@ public:
     ~LutBuilder();
     void generate();
     double *peekWaveGetTable();
+    void applyDefaults();
     void buildLut();
 };

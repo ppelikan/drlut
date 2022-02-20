@@ -6,7 +6,6 @@
  **/
 #include <ctime>
 #include <map>
-#include <utility>
 #include "imgui.h"
 #include "imgui_stdlib.h"
 #include "implot.h"
@@ -38,30 +37,10 @@ EM_JS(void, js_save_as_file, (const char *str),
 #include "ImGuiFileDialog.h"
 #endif
 
-static std::map<DataType, float> DefaultAmplitude{
-    {DataType::eINT8, INT8_MAX},
-    {DataType::eINT16, INT16_MAX},
-    {DataType::eINT32, INT32_MAX},
-    {DataType::eUINT8, INT8_MAX},
-    {DataType::eUINT16, INT16_MAX},
-    {DataType::eUINT32, INT32_MAX},
-    {DataType::eFLOAT, 1.0},
-    {DataType::eDOUBLE, 1.0}};
-
-static std::map<DataType, float> DefaultOffset{
-    {DataType::eINT8, 0.0},
-    {DataType::eINT16, 0.0},
-    {DataType::eINT32, 0.0},
-    {DataType::eUINT8, INT8_MAX},
-    {DataType::eUINT16, INT16_MAX},
-    {DataType::eUINT32, INT32_MAX},
-    {DataType::eFLOAT, 0.0},
-    {DataType::eDOUBLE, 0.0}};
-
 static const float spacingY{6.0f};
-static const uint32_t step{1};
-static const uint32_t stepFast{10};
+static const uint32_t step{1}, stepFast{10};
 static const int sizeMax{100000};
+static bool keepOnePeriod{true};
 static char formula_str[512];
 static std::vector<char> PresetList;
 
@@ -83,6 +62,8 @@ void generate()
 {
     if (Builder.arraySize > sizeMax)
         Builder.arraySize = sizeMax;
+    if (keepOnePeriod)
+        Builder.samplesPerPeriod = Builder.arraySize;
     Builder.formulaText.assign(formula_str);
     Builder.generate();
 }
@@ -130,7 +111,6 @@ void popup(bool render_now = false)
 
 void loopGUI_main()
 {
-    static bool keepOnePeriod = true;
     static double numberOfPeriods = 1.0;
 
     const ImGuiViewport *viewport = GetMainViewport();
@@ -178,11 +158,7 @@ void loopGUI_main()
         if (Checkbox("Generate one period", &keepOnePeriod))
         {
             if (keepOnePeriod)
-            {
-                if (Builder.samplesPerPeriod > sizeMax)
-                    Builder.samplesPerPeriod = sizeMax;
                 Builder.arraySize = Builder.samplesPerPeriod;
-            }
             generate();
         }
 
@@ -204,8 +180,7 @@ void loopGUI_main()
         Dummy(ImVec2(0, spacingY));
         if (Combo("Data type", reinterpret_cast<int *>(&Builder.Table.type), "int8\0int16\0int32\0uint8\0uint16\0uint32\0float\0\0"))
         {
-            Builder.amplitudeDouble = DefaultAmplitude[Builder.Table.type];
-            Builder.offsetDouble = DefaultOffset[Builder.Table.type];
+            Builder.applyDefaults();
             generate();
         }
         if (RadioButton("overflow", reinterpret_cast<int *>(&Builder.castMethod), 0))
@@ -220,10 +195,6 @@ void loopGUI_main()
         Text("Range behaviour");
         if (InputScalar("Array size", ImGuiDataType_U32, &Builder.arraySize, &step, &stepFast, "%u"))
         {
-            if (Builder.arraySize > sizeMax)
-                Builder.arraySize = sizeMax;
-            if (keepOnePeriod)
-                Builder.samplesPerPeriod = Builder.arraySize;
             generate();
         }
         RadioButton("dec", reinterpret_cast<int *>(&Builder.Table.base), 0);

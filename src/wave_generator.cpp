@@ -4,12 +4,11 @@
  *  Copyright (c) 2021 by ppelikan
  *  github.com/ppelikan
  **/
-#include <algorithm>
-#include <cmath>
+#include <random>
 #include "tinyexpr.h"
 #include "wave_generator.h"
 
-std::mt19937 *Gen;
+std::mt19937 *Gen = nullptr;
 std::uniform_real_distribution<double> distr(-1.0, 1.0);
 
 void WaveGenerator::init()
@@ -28,7 +27,7 @@ double randD()
 bool WaveGenerator::generate(GeneratorConfig config)
 {
     double x, maxx = (double)config.samplesPerPeriod;
-    te_variable vars[] = {{"t", &x}, {"T", &maxx}, {"rand", (const void*)randD, TE_FUNCTION0}};
+    te_variable vars[] = {{"t", &x}, {"T", &maxx}, {"rand", (const void *)randD, TE_FUNCTION0}};
     int err;
     te_expr *expr = te_compile(config.formula.c_str(), vars, 3, &err);
     if (!expr)
