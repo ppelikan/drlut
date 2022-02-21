@@ -5,7 +5,6 @@
  *  github.com/ppelikan
  **/
 #include <ctime>
-#include <map>
 #include "imgui.h"
 #include "imgui_stdlib.h"
 #include "implot.h"
@@ -70,17 +69,8 @@ void generate()
 
 void initGUI_main()
 {
-    size_t s = 0;
-    for (auto p : Builder.Presets)
-        s += p.first.length() + 1;
-    PresetList.resize(s + 2);
-    s = 0;
-    for (auto p : Builder.Presets)
-    {
-        strcpy(&PresetList.at(s), p.first.c_str());
-        s += p.first.length() + 1;
-    }
-    strcpy(formula_str, Builder.Presets.at(Builder.selectedPreset).second.c_str());
+    PresetList = Builder.getPresetList();
+    strcpy(formula_str, Builder.applyPreset().c_str());
     generate();
 }
 
@@ -128,7 +118,7 @@ void loopGUI_main()
         Dummy(ImVec2(0, spacingY));
         if (Combo("Formula preset", &Builder.selectedPreset, PresetList.data()))
         {
-            strcpy(formula_str, Builder.Presets.at(Builder.selectedPreset).second.c_str());
+            strcpy(formula_str, Builder.applyPreset().c_str());
             generate();
         }
 
@@ -194,9 +184,7 @@ void loopGUI_main()
         SameLine();
         Text("Range behaviour");
         if (InputScalar("Array size", ImGuiDataType_U32, &Builder.arraySize, &step, &stepFast, "%u"))
-        {
             generate();
-        }
         RadioButton("dec", reinterpret_cast<int *>(&Builder.Table.base), 0);
         SameLine();
         RadioButton("hex", reinterpret_cast<int *>(&Builder.Table.base), 1);

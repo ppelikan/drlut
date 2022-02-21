@@ -42,22 +42,7 @@ private:
         {DataType::eFLOAT, 0.0},
         {DataType::eDOUBLE, 0.0}};
 
-    void executePostprocessing();
-    void executeTypeConversion();
-
-public:
-    MultitypeArray Table;
-    uint32_t samplesPerPeriod{1024};
-    int32_t arraySize{1024};
-    CastMethod castMethod{CastMethod::eSATURATE};
-    double amplitudeDouble{INT16_MAX};
-    double offsetDouble{0.0};
-    int selectedPreset{1};
-    std::string OutputText{""};
-    std::string formulaText{""};
-    bool formulaError = false;
-
-    std::vector<std::pair<std::string, std::string>> Presets{
+    const std::vector<std::pair<std::string, std::string>> Presets{
         {"zeros", "0"},
         {"sin", "sin(2*pi*t/T)"},
         {"cos", "cos(2*pi*t/T)"},
@@ -74,10 +59,27 @@ public:
         {"flat top", "0.215-0.416*cos(2*pi*t/T)+0.277*cos(4*pi*t/T)+\n0.083*cos(6*pi*t/T)+0.007*cos(8*pi*t/T)"},
         {"sigmoid", "1/(1+pow(e,-(t-(T/2))/(T/20)))"}};
 
+    void executePostprocessing();
+    void executeTypeConversion();
+
+public:
+    MultitypeArray Table;
+    uint32_t samplesPerPeriod{1024};
+    int32_t arraySize{1024};
+    CastMethod castMethod{CastMethod::eSATURATE};
+    double amplitudeDouble{INT16_MAX};
+    double offsetDouble{0.0};
+    int selectedPreset{1};
+    std::string OutputText{""};
+    std::string formulaText{""};
+    bool formulaError{false};
+
     LutBuilder();
     ~LutBuilder();
     void generate();
     double *peekWaveGetTable();
     void applyDefaults();
+    std::string applyPreset();
+    std::vector<char> getPresetList();
     void buildLut();
 };

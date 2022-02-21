@@ -5,6 +5,7 @@
  *  github.com/ppelikan
  **/
 #include <algorithm>
+#include <cstring>
 #include "lut_builder.h"
 
 void LutBuilder::executePostprocessing()
@@ -63,6 +64,27 @@ void LutBuilder::applyDefaults()
     amplitudeDouble = DefaultAmplitude.at(Table.type);
     offsetDouble = DefaultOffset.at(Table.type);
 };
+
+std::string LutBuilder::applyPreset()
+{
+    return formulaText = Presets.at(selectedPreset).second;
+}
+
+std::vector<char> LutBuilder::getPresetList()
+{
+    std::vector<char> PresetList;
+    size_t s = 0;
+    for (auto p : Presets)
+        s += p.first.length() + 1;
+    PresetList.resize(s + 2);
+    s = 0;
+    for (auto p : Presets)
+    {
+        strcpy(&PresetList.at(s), p.first.c_str());
+        s += p.first.length() + 1;
+    }
+    return PresetList;
+}
 
 void LutBuilder::buildLut()
 {
