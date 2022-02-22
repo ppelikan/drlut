@@ -30,6 +30,8 @@ void LutBuilder::executeTypeConversion()
 LutBuilder::LutBuilder()
 {
     WaveGenerator::init();
+    applyDefaults();
+    applyPreset();
 }
 
 LutBuilder::~LutBuilder()

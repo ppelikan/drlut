@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=900, initial-scale=1, maximum-scale=2, minimum-scale=0.5, user-scalable=yes" />
+  <meta name="viewport" content="width=920, initial-scale=0.25, maximum-scale=2, minimum-scale=0.25, user-scalable=yes" />
   <meta name="description" content="Online DSP lookup table generator">
   <meta name="keywords" content="sine, dsp, lut, lookup, table, online, generator, c, cpp, array, tool, waveform, wave">
   <meta name="author" content="ppelikan">
@@ -15,15 +15,15 @@
       margin: 0;
       background-color: #141d22;
       color: #56a7dd;
-      font: normal 12px Arial, sans-serif;
+      font: normal 13px Arial, sans-serif;
     }
 
     a:link {
-      color: #f73859;
+      color: #669;
     }
 
     a:visited {
-      color: #f73859;
+      color: #669;
     }
 
     .emscripten {
@@ -44,12 +44,76 @@
     .description {
       width: max-content;
     }
+
+    #forkongithub a {
+      background: #669;
+      color: #fff;
+      text-decoration: none;
+      font: bold 0.8rem Arial, sans-serif;
+      text-align: center;
+      padding: 5px 40px;
+      line-height: 1.5rem;
+      position: relative;
+      transition: 0.15s;
+    }
+
+    #forkongithub a:hover {
+      background: #0a0;
+      color: #fff;
+      padding: 5px 40px;
+      font-size: 0.95rem;
+    }
+
+    #forkongithub a::before,
+    #forkongithub a::after {
+      content: "";
+      width: 100%;
+      display: block;
+      position: absolute;
+      top: 3px;
+      left: 0;
+      height: 1px;
+      background: #bbb;
+    }
+
+    #forkongithub a::after {
+      bottom: 3px;
+      top: auto;
+    }
+
+    @media screen and (min-width:800px) {
+      #forkongithub {
+        position: fixed;
+        display: block;
+        top: 0;
+        right: 0;
+        width: 200px;
+        overflow: hidden;
+        height: 200px;
+        z-index: 9999;
+      }
+
+      #forkongithub a {
+        width: 150px;
+        position: absolute;
+        top: 38px;
+        right: -65px;
+        transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        -moz-transform: rotate(45deg);
+        -o-transform: rotate(45deg);
+        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.8);
+        padding: 2px 40px;
+      }
+    }
   </style>
 </head>
 
 <body>
   <textarea id="clipboard_text_aera" type=hidden
     style="width:0;height:0;border:0;resize:none;margin-top:-60px;position:absolute;" aria-hidden="true"></textarea>
+  <span id="forkongithub"><a href="https://github.com/ppelikan/drlut">Fork me on GitHub</a></span>
   <center>
     <h1>Dr LUT</h1>
     <h2>Online DSP Lookup Table Generator</h2>
@@ -108,8 +172,8 @@
       <tt>pi</tt>, <tt>e</tt><br><br>
       Functions:<br>
       <tt>abs(x), acos(x), asin(x), atan(x), atan2(x,y), ceil(x), cos(x),<br>
-      cosh(x), exp(x), fac(x), floor(x), ln(x), log(x), log10(x), ncr(x,y),<br>
-      npr(x,y), pow(x,y), sin(x), sinh(x), sqrt(x), tan(x), tanh(x)</tt>.<br><br>
+        cosh(x), exp(x), fac(x), floor(x), ln(x), log(x), log10(x), ncr(x,y),<br>
+        npr(x,y), pow(x,y), sin(x), sinh(x), sqrt(x), tan(x), tanh(x)</tt>.<br><br>
       Operators:<br>
       <tt>+, -, *, /, ^, %, (, ), , </tt><br><br>
     </div>
