@@ -1,4 +1,4 @@
-# Dr LUT - Lookup Table Generator <img alt="Dr LUT icon" src="favicon.ico" align="right"/>
+# Dr LUT - Lookup Table Generator [<img alt="Dr LUT icon" src="favicon.ico" align="right"/>](https://ppelikan.github.io/drlut)
 
 Online tool written in C/C++ that generates waveforms and exports them as arrays.
 
