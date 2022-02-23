@@ -28,9 +28,10 @@ https://ppelikan.github.io/drlut
 todo:
 * add array size computation in bytes/kbytes/megabytes and widget to display it
 * "warning: 'BeginPlot' is deprecated"
-* move some logic from gui_app_main.cpp to lut_builder.cpp
-* simplify MultitypeArray.to_string() implementation (for float and uint32 variants)
 * fix broken comments for formulas containing `\n` characters (buildLut() function)
+* NaN and INF warning should be shown if detected (before type casting)
+* fix clipboard (Ctrl+C and Ctrl+V) on web target
+* add include guards to generated headers
 ```
 
 ## Building

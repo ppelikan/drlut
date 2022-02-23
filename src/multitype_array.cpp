@@ -1,9 +1,9 @@
 /**
  *  Dr.LUT - Lookup Table Generator
- * 
+ *
  *  Copyright (c) 2021 by ppelikan
  *  github.com/ppelikan
-**/
+ **/
 #include <memory>
 #include <string>
 #include <stdexcept>
@@ -53,8 +53,7 @@ void MultitypeArray::cast_saturating()
     std::transform(Array.begin(), Array.end(), Array.begin(), [=](double &c)
                    {
                        double v = round(c);
-                       return v > max ? max : (v < min ? min : v);
-                   });
+                       return v > max ? max : (v < min ? min : v); });
 }
 
 MultitypeArray::MultitypeArray()
@@ -99,8 +98,8 @@ std::string MultitypeArray::to_string(size_t columns, std::string separator)
     {
         const std::string decFormat;
         const std::string hexFormat;
-        const uint16_t decLen;
-        const uint16_t hexLen;
+        const int decLen;
+        const int hexLen;
     };
     const std::map<DataType, DataDict> DataTypeDict{
         {DataType::eINT8, {"% 4i", "0x%02hhX", 4, 4}},
@@ -113,7 +112,7 @@ std::string MultitypeArray::to_string(size_t columns, std::string separator)
         {DataType::eDOUBLE, {"% #.10f", "%021A", 10, 21}}};
 
     std::string format;
-    uint16_t len;
+    int len;
     if (base == NumericBase::eDEC)
     {
         format = DataTypeDict.at(type).decFormat;
@@ -125,46 +124,34 @@ std::string MultitypeArray::to_string(size_t columns, std::string separator)
         len = columns / (DataTypeDict.at(type).hexLen + separator.size());
     }
 
-    std::string result{""};
-    uint16_t pos = -1;
-    if ((type == DataType::eFLOAT) || (type == DataType::eDOUBLE))
-    {
-        for (auto a : Array)
-        {
-            if (++pos >= len)
-            {
-                pos = 0;
-                result += "\n";
-            }
-            result += string_format(format, a) + separator;
-        }
-        if (base == NumericBase::eHEX)
-        {
-            std::replace(result.begin(), result.end(), 'X', 'x');
-            std::replace(result.begin(), result.end(), 'P', 'p');
-        }
-    }
-    else if (type == DataType::eUINT32) // ugly! but it works fast,
-        for (auto a : Array)
-        {
-            if (++pos >= len)
-            {
-                pos = 0;
-                result += "\n";
-            }
-            result += string_format(format, static_cast<uint32_t>(a)) + separator;
-        }
-    else
-        for (auto a : Array)
-        {
-            if (++pos >= len)
-            {
-                pos = 0;
-                result += "\n";
-            }
-            result += string_format(format, static_cast<int32_t>(a)) + separator;
-        }
+    std::function<std::string(std::string, double)> formater;
 
+    if ((type == DataType::eFLOAT) || (type == DataType::eDOUBLE))
+        formater = [](const std::string &format, double a)
+        { return string_format(format, a); };
+    else if (type == DataType::eUINT32)
+        formater = [](const std::string &format, double a)
+        { return string_format(format, static_cast<uint32_t>(a)); };
+    else
+        formater = [](const std::string &format, double a)
+        { return string_format(format, static_cast<int32_t>(a)); };
+
+    std::string result{""};
+    int pos = -1;
+    for (auto a : Array)
+    {
+        if (++pos >= len)
+        {
+            pos = 0;
+            result += "\n";
+        }
+        result += formater(format, a) + separator;
+    }
+    if (base == NumericBase::eHEX)
+    {
+        std::replace(result.begin(), result.end(), 'X', 'x');
+        std::replace(result.begin(), result.end(), 'P', 'p');
+    }
     result.erase(result.size() - separator.size());
     return result;
 }
