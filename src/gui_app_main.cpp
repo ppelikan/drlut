@@ -13,15 +13,6 @@
 
 #ifdef WASM_BUILD
 #include <emscripten.h>
-EM_JS(void, js_copy_to_clipboard, (const char *str),
-      {
-          var contentText = document.getElementById("clipboard_text_aera");
-          contentText.value = UTF8ToString(str);
-          contentText.select();
-          contentText.setSelectionRange(0, 99999); // For mobile devices
-          document.execCommand("copy");
-      });
-
 EM_JS(void, js_save_as_file, (const char *str),
       {
           var downloadableLink = document.createElement('a');
@@ -241,11 +232,7 @@ void loopGUI_main()
 
     if (Button("Copy all to clipboard"))
     {
-#ifdef WASM_BUILD
-        js_copy_to_clipboard(Builder.OutputText.c_str());
-#else
         SetClipboardText(Builder.OutputText.c_str());
-#endif
         popup();
     }
     SameLine();

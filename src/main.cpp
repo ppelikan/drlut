@@ -1,9 +1,9 @@
 /**
  *  Dr.LUT - Lookup Table Generator
- * 
+ *
  *  Copyright (c) 2021 by ppelikan
  *  github.com/ppelikan
-**/
+ **/
 #include <cstdio>
 #include <SDL.h>
 
@@ -21,6 +21,34 @@
 
 #include "gui_app_main.h"
 
+#ifdef WASM_BUILD
+EM_JS(void, js_copy_to_clipboard, (const char *str),
+      {
+          var contentText = document.getElementById("clipboard_text_aera");
+          contentText.value = UTF8ToString(str);
+          contentText.select();
+          contentText.setSelectionRange(0, 99999); // For mobile devices
+          document.execCommand("copy");
+      });
+
+EM_ASYNC_JS(char *, js_paste_from_clipboard, (), {
+        // var contentText = document.getElementById("clipboard_text_aera");
+        // contentText.value = "";
+        // contentText.focus();
+        var str = "";
+        try
+        {str = await navigator.clipboard.readText();}
+        catch (err)
+        {window.alert("Unable to paste from clipboard!\nCheck if page address starts with 'https'!\nOr use different browser.");}
+        // document.getElementById("canvas").focus();
+        // var str = contentText.value;
+        const size = lengthBytesUTF8(str) + 1;
+        const rtn = _malloc(size);
+        stringToUTF8(str, rtn, size);
+        return rtn;
+});
+
+#endif
 SDL_Window *window = NULL;
 SDL_GLContext gl_context = NULL;
 
@@ -65,7 +93,7 @@ int main(int, char **)
         return 1;
     }
 
-    SDL_GL_MakeCurrent(window, gl_context); //todo check if this can be put in the same place as in wasm version
+    SDL_GL_MakeCurrent(window, gl_context); // todo check if this can be put in the same place as in wasm version
 
     SDL_GL_SetSwapInterval(1); // Enable vsync
 
@@ -79,12 +107,12 @@ int main(int, char **)
     ImPlot::GetStyle().FitPadding = ImVec2(0.05, 0.05);
     ImGuiIO &io = ImGui::GetIO();
     (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
-    //ImGui::StyleColorsLight();
+    // ImGui::StyleColorsClassic();
+    // ImGui::StyleColorsLight();
 
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
@@ -92,6 +120,15 @@ int main(int, char **)
 
     initGUI_main();
 #ifdef WASM_BUILD
+    io.SetClipboardTextFn = [](void *, const char *text)
+    {
+        js_copy_to_clipboard(text);
+    };
+    io.GetClipboardTextFn = [](void *)
+    {
+        return (const char *)js_paste_from_clipboard();
+    };
+
     // This function call won't return, and will engage in an infinite loop, processing events from the browser, and dispatching them.
     emscripten_set_main_loop_arg(main_loop, NULL, 0, true);
 #else
