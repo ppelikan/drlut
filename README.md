@@ -30,7 +30,6 @@ todo:
 * "warning: 'BeginPlot' is deprecated"
 * fix broken comments for formulas containing `\n` characters (buildLut() function)
 * NaN and INF warning should be shown if detected (before type casting)
-* fix clipboard (Ctrl+C and Ctrl+V) on web target
 * add include guards to generated headers
 ```
 
