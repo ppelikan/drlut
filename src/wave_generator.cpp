@@ -24,12 +24,20 @@ double randD()
     return distr(*Gen);
 }
 
+double stepF(double x)
+{
+    return x < 0.0 ? 0.0 : 1.0;
+}
+
 bool WaveGenerator::generate(GeneratorConfig config)
 {
     double x, maxx = (double)config.samplesPerPeriod;
-    te_variable vars[] = {{"t", &x}, {"T", &maxx}, {"rand", (const void *)randD, TE_FUNCTION0}};
+    te_variable vars[] = {{"t", &x},
+                          {"T", &maxx},
+                          {"rand", (const void *)randD, TE_FUNCTION0},
+                          {"step", (const void *)stepF, TE_FUNCTION1}};
     int err;
-    te_expr *expr = te_compile(config.formula.c_str(), vars, 3, &err);
+    te_expr *expr = te_compile(config.formula.c_str(), vars, 4, &err);
     if (!expr)
         return true;
     for (size_t i = 0; i < config.SampleArray.size(); ++i)

@@ -51,13 +51,15 @@ private:
         {"sawtooth", "2*(t%T)/T-1"},
         {"sawtooth reversed", "1-2*(t%T)/T"},
         {"triangle", "4*abs(t/T-floor(t/T+1/2))-1"},
+        {"square", "step(t%T-T*1/4)-step(t%T-T*3/4)"},
         {"white noise", "rand"},
         {"gauss", "exp(-((2*3*t/T-3)^2)/(2*0.8^2))"},
         {"hamming", "0.5-0.4*cos((2*pi*t)/(T-1))"},
         {"hann", "0.5*(1-cos((2*pi*t)/(T-1)))"},
         {"bartlett", "1-abs((t-(T-1)/2)/((T-1)/2))"},
         {"flat top", "0.215-0.416*cos(2*pi*t/T)+0.277*cos(4*pi*t/T)+\n0.083*cos(6*pi*t/T)+0.007*cos(8*pi*t/T)"},
-        {"sigmoid", "1/(1+pow(e,-(t-(T/2))/(T/20)))"}};
+        {"sigmoid", "1/(1+pow(e,-(t-(T/2))/(T/20)))"},
+        {"step", "step(t-T/2)"}};
 
     void executePostprocessing();
     void executeTypeConversion();
