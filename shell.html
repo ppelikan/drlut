@@ -16,7 +16,7 @@
       margin: 0;
       background-color: #141d22;
       color: #56a7dd;
-      font: normal 13px Arial, sans-serif;
+      font: normal 14px Arial, sans-serif;
     }
 
     a:link,
@@ -114,8 +114,9 @@
   <span id="forkongithub"><a href="https://github.com/ppelikan/drlut">Fork me on GitHub</a></span>
   <center>
     <h1>Dr LUT</h1>
-    <h2>Online DSP Lookup Table Generator</h2>
-    Just write any math expression and get the generated C/C++ header file with data array inside.<br><br>
+    <h2>Online DSP Lookup Table Generator<br>
+    <small>(sine wave LUT calculator)</small></h2>
+    Write any math expression to get a generated C/C++ file with the data array inside.<br><br>
     <div class="emscripten_border">
       <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" width="900" height="600"></canvas>
       <script type='text/javascript'>
@@ -152,36 +153,33 @@
     </div>
     <br><br>
     <div class="description" align="left">
-      <center><big>Tips:</big></center><br>
-      When composing complex formulas, switch to <tt>float</tt> data type first to avoid confusion.<br><br>
-      Use <tt>Ctrl</tt> key when clicking the <tt>+</tt> or <tt>-</tt> buttons for a bigger increment or decrement
+      <center><big><b>Tips:</b></big></center><br>
+      When composing complex formulas, switch to the<code>&nbspfloat&nbsp</code>data type first to avoid confusion.<br><br>
+      Use the <code>&nbspCtrl&nbsp</code> key while clicking a<code>&nbsp+&nbsp</code>or<code>&nbsp-&nbsp</code>buttons for a bigger increment or decrement
       step.<br><br>
-      Select any number in the desired textfield and write e.g. <tt>*2</tt> to multiply the value by two.<br>
-      Available operators:<tt> *</tt>,<tt> /</tt>,<tt> +</tt>,<tt> -</tt>.<br><br>
       Right click on the plot to see more options.<br>
       When the auto fit option is disabled, double click on the plot to auto fit the view.<br><br>
-      Use negative amplitude values to mirror vertically the wave shape.<br><br>
-      <center><big>Available formula utils:</big></center><br>
-      Variables:<br>
-      <tt>t</tt> - current sample index (from 0 to T)<br>
-      <tt>T</tt> - number of samples per one period<br>
-      <tt>rand</tt> - fresh random number (from -1.0 to 1.0)<br><br>
-      Constants:<br>
-      <tt>pi</tt>, <tt>e</tt><br><br>
-      Functions:<br>
-      <tt>abs(x), acos(x), asin(x), atan(x), atan2(x,y), ceil(x), cos(x),<br>
+      Use negative amplitude values to mirror vertically the wave shape.<br><br><br>
+      <center><big><b>Supported formula expressions:</b></big></center><br>
+      <b>Variables:</b><br>
+      <code>t&nbsp</code>- current sample index (from<code>&nbsp0&nbsp</code>to array size-1)<br>
+      <code>T&nbsp</code>- number of samples per one period<br>
+      <code>rand&nbsp</code>- fresh random number (from<code>&nbsp-1.0&nbsp</code>to<code>&nbsp1.0</code>)<br><br>
+      <b>Constants:</b><br>
+      <code>pi, e</code><br><br>
+      <b>Functions:</b><br>
+      <code>abs(x), acos(x), asin(x), atan(x), atan2(x,y), ceil(x), cos(x),<br>
         cosh(x), exp(x), fac(x), floor(x), ln(x), log(x), log10(x), ncr(x,y),<br>
-        npr(x,y), pow(x,y), sin(x), sinh(x), sqrt(x), tan(x), tanh(x)</tt>.<br><br>
-      Operators:<br>
-      <tt>+, -, *, /, ^, %, (, ), , </tt><br><br>
+        npr(x,y), pow(x,y), sin(x), sinh(x), sqrt(x), tan(x), tanh(x)</code>.<br><br>
+      <b>Operators:</b><br>
+      <code>+, -, *, /, ^, %, (, ), , </code><br><br>
     </div>
     <br>
     <br>
     <a target="_blank" rel="noopener noreferrer"
       href="https://github.com/ppelikan/drlut">https://github.com/ppelikan/drlut</a>
     <small><br><br>
-      Copyright (c)
-      <script>document.write(new Date().getFullYear())</script> by ppelikan
+      Copyright (c)&nbsp<script>document.write(new Date().getFullYear())</script>&nbspby ppelikan
     </small><br><br>
   </center>
 </body>

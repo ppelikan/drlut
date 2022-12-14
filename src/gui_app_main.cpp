@@ -194,13 +194,13 @@ void loopGUI_main()
         if (plotDimensions.y < 50.0f)
             plotDimensions.y = 50.0f;
 
-        if (Builder.arraySize <= 5121) // todo - drawing more datapoints is currently not supported
+        if (Builder.arraySize <= 8140) // todo - drawing more datapoints is currently not supported
         {
             ImPlotAxisFlags plotflag = ImPlotAxisFlags_NoLabel | ImPlotAxisFlags_AutoFit;
             ImPlotFlags plotflag2 = ImPlotFlags_NoTitle | ImPlotFlags_NoLegend;
             if (ImPlot::BeginPlot("##plot", "", "", plotDimensions, plotflag2, plotflag, plotflag))
             {
-                if (Builder.arraySize <= 4000) // todo - drawing more datapoints is currently not supported
+                if (Builder.arraySize <= 2328) // todo - drawing more datapoints is currently not supported
                     ImPlot::SetNextMarkerStyle(ImPlotMarker_Square, 2.0f);
                 ImPlot::PlotStairs("##plot_line", Builder.peekWaveGetTable(), Builder.arraySize);
 
@@ -211,7 +211,7 @@ void loopGUI_main()
         {
             Text("Please notice!");
             Text("Plot is supported only for");
-            Text("array sizes up to 5121.");
+            Text("array sizes up to 8140.");
 #ifdef WASM_BUILD
             Text("'Copy to clipboard' option is");
             Text("only supported up to 99999");
