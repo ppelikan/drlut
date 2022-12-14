@@ -27,7 +27,6 @@ https://ppelikan.github.io/drlut
 ```
 todo:
 * add array size computation in bytes/kbytes/megabytes and widget to display it
-* "warning: 'BeginPlot' is deprecated"
 * fix broken comments for formulas containing `\n` characters (buildLut() function)
 * NaN and INF warning should be shown if detected (before type casting)
 * add include guards to generated headers

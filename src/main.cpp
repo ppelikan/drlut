@@ -58,7 +58,9 @@ int main(int, char **)
     // Setup SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
+        #ifndef WASM_BUILD
         printf("Error: %s\n", SDL_GetError());
+        #endif
         return -1;
     }
 
@@ -84,11 +86,13 @@ int main(int, char **)
 
     if (!gl_context)
     {
+        #ifndef WASM_BUILD
         fprintf(stderr, "Failed to initialize SDL GL context!\n");
+        #endif
         return 1;
     }
 
-    SDL_GL_MakeCurrent(window, gl_context); // todo check if this can be put in the same place as in wasm version
+    SDL_GL_MakeCurrent(window, gl_context);
 
     SDL_GL_SetSwapInterval(1); // Enable vsync
 

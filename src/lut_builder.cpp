@@ -11,7 +11,11 @@
 void LutBuilder::executePostprocessing()
 {
     std::vector<double> &arr = Table.vector_double();
-    double mux = amplitudeDouble - 0.0000000001; // temporary solution to unwanted overflows
+    double mux;
+    if ((Table.type == DataType::eFLOAT) || (Table.type == DataType::eDOUBLE))
+        mux = amplitudeDouble;
+    else
+        mux = amplitudeDouble - 0.0000000001; // todo, solution to unwanted overflows
     double off = offsetDouble;
     std::transform(arr.begin(), arr.end(), arr.begin(), [mux](double &c)
                    { return c * mux; });

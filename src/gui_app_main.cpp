@@ -92,17 +92,15 @@ void popup(bool render_now = false)
 
 void loopGUI_main()
 {
-    static double numberOfPeriods = 1.0;
-
     const ImGuiViewport *viewport = GetMainViewport();
     SetNextWindowPos(viewport->Pos);
     SetNextWindowSize(viewport->Size);
 
     Begin("Dr LUT", NULL, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings);
 
-    BeginTable("tab1", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable);
+    BeginTable("##tab1", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_Reorderable);
     TableNextColumn();
-    BeginChild("child1", ImVec2(0, 0), false);
+    BeginChild("##child1", ImVec2(0, 0), false);
 
     if (CollapsingHeader("Waveform properties", ImGuiTreeNodeFlags_DefaultOpen))
     {
@@ -112,7 +110,7 @@ void loopGUI_main()
             strcpy(formula_str, Builder.applyPreset().c_str());
             generate();
         }
-
+        
         bool ferr = Builder.formulaError;
         if (ferr)
         {
@@ -121,7 +119,7 @@ void loopGUI_main()
         }
         ImVec2 formulaDImensions = GetContentRegionAvail();
         formulaDImensions.y = 20;
-        if (InputTextMultiline("Formula", formula_str, IM_ARRAYSIZE(formula_str), formulaDImensions))
+        if (InputTextMultiline("##Formula", formula_str, IM_ARRAYSIZE(formula_str), formulaDImensions))
         {
             generate();
         }
@@ -145,9 +143,8 @@ void loopGUI_main()
 
         if (!keepOnePeriod)
         {
-            numberOfPeriods = (float)Builder.arraySize / (float)Builder.samplesPerPeriod;
             SameLine();
-            Text(" |  Number of periods: %f", numberOfPeriods);
+            Text(" |  Number of periods: %f", (float)Builder.arraySize / (float)Builder.samplesPerPeriod);
         }
 
         if (InputDouble("Amplitude##double", &Builder.amplitudeDouble, 1.0f, 10.0f, "%.8f"))
@@ -156,6 +153,7 @@ void loopGUI_main()
             generate();
         Dummy(ImVec2(0, spacingY));
     }
+
     if (CollapsingHeader("Array properties", ImGuiTreeNodeFlags_DefaultOpen))
     {
         Dummy(ImVec2(0, spacingY));
@@ -196,10 +194,10 @@ void loopGUI_main()
 
         if (Builder.arraySize <= 8140) // todo - drawing more datapoints is currently not supported
         {
-            ImPlotAxisFlags plotflag = ImPlotAxisFlags_NoLabel | ImPlotAxisFlags_AutoFit;
-            ImPlotFlags plotflag2 = ImPlotFlags_NoTitle | ImPlotFlags_NoLegend;
-            if (ImPlot::BeginPlot("##plot", "", "", plotDimensions, plotflag2, plotflag, plotflag))
+            if (ImPlot::BeginPlot("##plot", plotDimensions, ImPlotFlags_NoTitle | ImPlotFlags_NoLegend))
             {
+                static const ImPlotAxisFlags plotflag = ImPlotAxisFlags_NoLabel | ImPlotAxisFlags_AutoFit;
+                ImPlot::SetupAxes(NULL, NULL, plotflag, plotflag);
                 if (Builder.arraySize <= 2328) // todo - drawing more datapoints is currently not supported
                     ImPlot::SetNextMarkerStyle(ImPlotMarker_Square, 2.0f);
                 ImPlot::PlotStairs("##plot_line", Builder.peekWaveGetTable(), Builder.arraySize);
@@ -222,7 +220,7 @@ void loopGUI_main()
     }
     EndChild();
     TableNextColumn();
-    BeginChild("child2", ImVec2(0, 0), false);
+    BeginChild("##child2", ImVec2(0, 0), false);
 
     if (Button("Generate"))
     {
