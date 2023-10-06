@@ -21,7 +21,7 @@ SOURCES += $(IMGUI_DIR)/imgui.cpp\
 		   $(IMGUI_DIR)/imgui_tables.cpp\
 		   $(IMGUI_DIR)/imgui_widgets.cpp\
 		   $(IMGUI_DIR)/misc/cpp/imgui_stdlib.cpp\
-		   $(IMGUI_DIR)/backends/imgui_impl_sdl.cpp\
+		   $(IMGUI_DIR)/backends/imgui_impl_sdl2.cpp\
 		   $(IMGUI_DIR)/backends/imgui_impl_opengl3.cpp\
 		   $(IMPLOT_DIR)/implot.cpp\
 		   $(IMPLOT_DIR)/implot_items.cpp\
@@ -36,6 +36,8 @@ INCLUDES = -I$(IMGUI_DIR)\
 PORT_SOURCES = $(SOURCES) $(FD_DIR)/ImGuiFileDialog.cpp
 PORT_INCLUDES = $(INCLUDES) -I$(FD_DIR)
 
+FLAGS = -DIMGUI_DEFINE_MATH_OPERATORS
+
 ##---------------------------------------------------------------------
 ## EMSCRIPTEN OPTIONS
 ##---------------------------------------------------------------------
@@ -48,7 +50,7 @@ WASM_EMS += -s USE_SDL=2
 WASM_EMS += -s DISABLE_EXCEPTION_CATCHING=1
 # WASM_EMS += -s WASM=1 -s ALLOW_MEMORY_GROWTH=1
 # WASM_EMS += -s ASSERTIONS=1 -s NO_FILESYSTEM=1 -s NO_EXIT_RUNTIME=0
-WASM_EMS += -DIMGUI_DISABLE_FILE_FUNCTIONS
+WASM_EMS += -DIMGUI_DISABLE_FILE_FUNCTIONS $(FLAGS)
 
 WASM_CPPFLAGS = $(INCLUDES)
 WASM_CPPFLAGS += -Wall -Wformat -Os
@@ -71,7 +73,7 @@ PORT_CXXFLAGS += -Wall -Wformat -g
 # Release:
 #PORT_CXXFLAGS += -O2
 PORT_LIBS =
-PORT_CXXFLAGS += -DIMGUI_IMPL_OPENGL_ES2
+PORT_CXXFLAGS += -DIMGUI_IMPL_OPENGL_ES2 $(FLAGS)
 
 UNAME_S := $(shell uname -s)
 

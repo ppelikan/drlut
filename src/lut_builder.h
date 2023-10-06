@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <string>
+#include <cstdint>
 #include "wave_generator.h"
 #include "multitype_array.h"
 
